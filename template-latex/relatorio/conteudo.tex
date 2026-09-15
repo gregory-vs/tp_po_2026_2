@@ -1,0 +1,43 @@
+\section{Introducao}
+
+Este template segue a mesma organizacao do projeto em
+\texttt{repos/latex/latex}. Edite os comandos globais em
+\texttt{gerais/comandos.tex}, troque a capa em \texttt{capa/capa.tex} e escreva
+o conteudo principal neste arquivo ou divida o texto em outros arquivos dentro
+de \texttt{relatorio/}.
+
+\section{Exemplos}
+
+\subsection{Figura}
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{4cm}\rule{0.7\textwidth}{0pt}}
+  \caption{Espaco reservado para uma figura.}
+\end{figure}
+
+\subsection{Tabela}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{4cm}p{3cm}}
+    \toprule
+    Item & Valor \\
+    \midrule
+    Exemplo A & 10 \\
+    Exemplo B & 20 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Tabela de exemplo.}
+\end{table}
+
+\subsection{Codigo}
+
+\begin{minted}{python}
+def saudacao(nome: str) -> str:
+    return f"Ola, {nome}!"
+\end{minted}
+
+\section{Conclusao}
+
+Substitua este texto pelo encerramento do documento.
