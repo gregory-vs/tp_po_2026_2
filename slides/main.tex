@@ -1,0 +1,457 @@
+\documentclass[aspectratio=169]{beamer}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% ------------------------------------------------
+% Tema
+% ------------------------------------------------
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Remove ícones de navegação
+\setbeamertemplate{navigation symbols}{}
+
+% ------------------------------------------------
+% Rodapé
+% ------------------------------------------------
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[
+            wd=.80\paperwidth,
+            ht=2.5ex,
+            dp=1ex,
+            leftskip=1em
+        ]{author in head/foot}
+            \insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[
+            wd=.20\paperwidth,
+            ht=2.5ex,
+            dp=1ex,
+            center
+        ]{date in head/foot}
+            \insertframenumber/\inserttotalframenumber
+        \end{beamercolorbox}%
+    }
+}
+
+% ------------------------------------------------
+% Cores
+% ------------------------------------------------
+\definecolor{academicblue}{RGB}{25,65,110}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\setbeamercolor{structure}{
+    fg=academicblue
+}
+
+\setbeamercolor{frametitle}{
+    fg=white,
+    bg=academicblue
+}
+
+% Capa
+\setbeamercolor{title}{
+    fg=white,
+    bg=academicblue
+}
+
+\setbeamercolor{subtitle}{
+    fg=white,
+    bg=academicblue
+}
+
+\setbeamercolor{author}{
+    fg=black
+}
+
+\setbeamercolor{institute}{
+    fg=black
+}
+
+\setbeamercolor{date}{
+    fg=black
+}
+
+% Blocos
+\setbeamercolor{block title}{
+    fg=white,
+    bg=academicblue
+}
+
+\setbeamercolor{block body}{
+    fg=black,
+    bg=lightgray
+}
+
+% ------------------------------------------------
+% Informações da apresentação
+% ------------------------------------------------
+\title[aaasadffsaa]{
+testeaaaa
+}
+
+\subtitle{Subtítulo, se necessário}
+
+\author{Nome do Autor - Matrícula}
+
+\institute{
+    Universidade / Instituição \\
+    Curso ou Programa \\
+    Grupo de Pesquisa
+}
+
+\date{2026}
+
+% Para adicionar um logo:
+%
+% \titlegraphic{
+%     \includegraphics[width=2cm]{logo.png}
+% }
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% =================================================
+% CAPA
+% =================================================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% =================================================
+% SUMÁRIO
+% =================================================
+\begin{frame}{Sumário}
+    \tableofcontents
+\end{frame}
+
+% =================================================
+% INTRODUÇÃO
+% =================================================
+\section{Introdução}
+
+\begin{frame}{Contextualização}
+
+\begin{itemize}
+    \item Apresente brevemente o problema estudado.
+    \item Explique o contexto no qual o problema ocorre.
+    \item Mostre por que esse problema é relevante.
+    \item Apresente a principal lacuna identificada.
+\end{itemize}
+
+\vspace{0.4cm}
+
+\begin{block}{Questão de pesquisa}
+Qual é a principal pergunta que este trabalho busca responder?
+\end{block}
+
+\end{frame}
+
+% =================================================
+\begin{frame}{Motivação}
+
+\begin{columns}[T]
+
+    \begin{column}{0.48\textwidth}
+
+        \textbf{Problema}
+
+        \begin{itemize}
+            \item Problema 1
+            \item Problema 2
+            \item Problema 3
+        \end{itemize}
+
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+
+        \textbf{Impactos}
+
+        \begin{itemize}
+            \item Impacto 1
+            \item Impacto 2
+            \item Impacto 3
+        \end{itemize}
+
+    \end{column}
+
+\end{columns}
+
+\end{frame}
+
+% =================================================
+% OBJETIVOS
+% =================================================
+\section{Objetivos}
+
+\begin{frame}{Objetivos}
+
+\begin{block}{Objetivo geral}
+Descrever aqui o objetivo principal do trabalho.
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Objetivos específicos}
+
+\begin{itemize}
+    \item Investigar ...
+    \item Modelar ...
+    \item Desenvolver ...
+    \item Comparar ...
+    \item Avaliar ...
+\end{itemize}
+
+\end{frame}
+
+% =================================================
+% METODOLOGIA
+% =================================================
+\section{Metodologia}
+
+\begin{frame}{Metodologia}
+
+\begin{enumerate}
+    \item Revisão da literatura;
+    \item Definição do problema;
+    \item Construção do modelo;
+    \item Implementação computacional;
+    \item Execução dos experimentos;
+    \item Análise dos resultados.
+\end{enumerate}
+
+\end{frame}
+
+% =================================================
+\begin{frame}{Modelo matemático}
+
+Considere a variável de decisão:
+
+\[
+x_{ij} =
+\begin{cases}
+1, & \text{se a tarefa } i \text{ for atribuída ao desenvolvedor } j,\\
+0, & \text{caso contrário.}
+\end{cases}
+\]
+
+\vspace{0.3cm}
+
+Exemplo de função objetivo:
+
+\[
+\min z =
+\sum_{i \in I}
+\sum_{j \in J}
+c_{ij}x_{ij}
+\]
+
+sujeito a:
+
+\[
+\sum_{j \in J}x_{ij}=1,
+\qquad
+\forall i \in I
+\]
+
+\end{frame}
+
+% =================================================
+\begin{frame}{Fluxo da metodologia}
+
+\centering
+\small
+
+\fbox{\strut Dados}
+
+\vspace{0.15cm}
+
+$\downarrow$
+
+\vspace{0.15cm}
+
+\fbox{\strut Modelagem}
+
+\vspace{0.15cm}
+
+$\downarrow$
+
+\vspace{0.15cm}
+
+\fbox{\strut Otimização}
+
+\vspace{0.15cm}
+
+$\downarrow$
+
+\vspace{0.15cm}
+
+\fbox{\strut Experimentos}
+
+\vspace{0.15cm}
+
+$\downarrow$
+
+\vspace{0.15cm}
+
+\fbox{\strut Análise dos resultados}
+
+\end{frame}
+
+% =================================================
+% RESULTADOS
+% =================================================
+\section{Resultados}
+
+\begin{frame}{Resultados}
+
+\begin{table}
+\centering
+
+\begin{tabular}{lccc}
+
+\toprule
+\textbf{Cenário}
+& \textbf{Método A}
+& \textbf{Método B}
+& \textbf{Método C}
+\\
+
+\midrule
+
+Cenário 1 & 10.2 & 8.5 & 7.9 \\
+Cenário 2 & 12.1 & 9.3 & 8.8 \\
+Cenário 3 & 15.4 & 11.7 & 10.2 \\
+
+\bottomrule
+
+\end{tabular}
+
+\end{table}
+
+\vspace{0.4cm}
+
+\begin{block}{Principal resultado}
+Destacar aqui o resultado mais importante encontrado.
+\end{block}
+
+\end{frame}
+
+% =================================================
+\begin{frame}{Análise dos resultados}
+
+\begin{itemize}
+    \item O método A apresentou...
+    \item A estratégia B reduziu...
+    \item O cenário C demonstrou...
+    \item Os resultados sugerem que...
+\end{itemize}
+
+\end{frame}
+
+% =================================================
+% CONCLUSÕES
+% =================================================
+\section{Conclusões}
+
+\begin{frame}{Conclusões}
+
+\begin{itemize}
+    \item O problema foi modelado utilizando...
+    \item Os experimentos mostraram que...
+    \item A abordagem proposta permitiu...
+    \item Os resultados indicam...
+\end{itemize}
+
+\vspace{0.4cm}
+
+\begin{block}{Conclusão principal}
+Escrever aqui, em uma ou duas frases, a principal conclusão do trabalho.
+\end{block}
+
+\end{frame}
+
+% =================================================
+\begin{frame}{Trabalhos futuros}
+
+\begin{itemize}
+    \item Avaliar novos conjuntos de dados;
+    \item Adicionar novas restrições;
+    \item Considerar incerteza nos parâmetros;
+    \item Comparar novas técnicas de otimização;
+    \item Aplicar o modelo em um ambiente real.
+\end{itemize}
+
+\end{frame}
+
+% =================================================
+% REFERÊNCIAS
+% =================================================
+\section{Referências}
+
+\begin{frame}{Referências}
+
+\footnotesize
+
+\begin{thebibliography}{99}
+
+\bibitem{ref1}
+SOBRENOME, Nome.
+\newblock Título do artigo.
+\newblock \textit{Nome do Periódico}, 2025.
+
+\bibitem{ref2}
+SOBRENOME, Nome.
+\newblock Título do trabalho.
+\newblock Universidade, 2024.
+
+\bibitem{ref3}
+SOBRENOME, Nome.
+\newblock Título do livro.
+\newblock Editora, 2023.
+
+\end{thebibliography}
+
+\end{frame}
+
+% =================================================
+% FINAL
+% =================================================
+\begin{frame}
+
+\centering
+
+\vspace{1cm}
+
+{\Huge \textbf{Obrigado!}}
+
+\vspace{1cm}
+
+{\Large Perguntas?}
+
+\vspace{1cm}
+
+\texttt{seu.email@universidade.br}
+
+\end{frame}
+
+\end{document}
