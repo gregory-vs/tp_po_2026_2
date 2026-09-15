@@ -1,0 +1,7 @@
+\babel@toc {brazil}{}\relax 
+\beamer@sectionintoc {1}{Introdução}{3}{0}{1}
+\beamer@sectionintoc {2}{Objetivos}{5}{0}{2}
+\beamer@sectionintoc {3}{Metodologia}{6}{0}{3}
+\beamer@sectionintoc {4}{Resultados}{9}{0}{4}
+\beamer@sectionintoc {5}{Conclusões}{11}{0}{5}
+\beamer@sectionintoc {6}{Referências}{13}{0}{6}
