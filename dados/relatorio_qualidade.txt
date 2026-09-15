@@ -1,0 +1,68 @@
+==============================================================
+RELATÓRIO DE PREPARAÇÃO DOS DADOS
+==============================================================
+
+1. EXTRAÇÃO
+   linhas de tarefa lidas ................ 304
+   vínculos declarados como predecessora . 860
+   vínculos declarados como sucessora .... 677
+   linhas de agrupamento ................. 62
+   atividades de trabalho real ........... 242
+
+2. CALENDÁRIO
+   datas convertidas de calendário para dias úteis
+   linhas em que término-início divergia da duração ... 79 (ajustadas)
+   horizonte do cronograma praticado .................. 491 dias úteis
+
+3. PRECEDÊNCIAS
+   vínculos brutos (pred + suc) ...................... 1365
+   vínculos que citavam linha de agrupamento ......... 156 (expandidos)
+   após expansão e remoção de duplicatas ............. 1053
+   arcos que fechavam ciclo .......................... 22 (removidos)
+   vínculos incoerentes com o próprio cronograma ..... 37 (descartados)
+   vínculos mantidos ................................. 994
+   com isso o cronograma praticado passa a ser solução viável do modelo,
+   e qualquer ótimo encontrado é igual ou melhor que ele.
+
+4. ENTREGÁVEIS
+   cadeias emissão/análise identificadas ............. 82
+   revisões observadas ............................... {'R00': 61, 'R01': 37, 'R02': 4, 'R03': 2}
+
+4b. PREENCHIMENTO DE LACUNAS
+   disciplina ausente -> GERAL ....................... 44
+   fase ausente -> GERAL ............................. 58
+   papel ausente -> padrão por tipo de atividade ..... 34
+
+7. CAPACIDADE DAS EQUIPES
+   derivada do pico de atividades simultaneas no cronograma praticado
+   (menor capacidade que torna o cronograma real viavel)
+   ANL-PRODUTO          pico observado: 7
+   PROJ-INT             pico observado: 4
+   PROJ-ARQ             pico observado: 7
+   ANL-ENGENHARIA       pico observado: 4
+   PROJ-LUM             pico observado: 1
+   PROJ-HID             pico observado: 2
+   PROJ-EST             pico observado: 1
+   PROJ-ELE             pico observado: 3
+
+5. VERIFICAÇÃO FINAL
+   atividades ........................................ 242
+   linhas de agrupamento (não usar no modelo) ........ 53
+   precedências ...................................... 994
+   papéis distintos .................................. 34
+   nomes duplicados ..............................  0
+   atividades sem papel ..........................  0
+   atividades sem disciplina .....................  0
+   atividades sem fase ...........................  0
+   duração <= 0 ..................................  0
+   término != início + duração - 1 ...............  0
+   precedência com id inexistente ................  0
+   precedência citando agrupador .................  0
+   auto-referência ...............................  0
+   atividades isoladas (sem vínculo) .............  4
+   ciclos remanescentes ............................. 0
+
+6. ANONIMIZAÇÃO
+   empresas nominais substituídas por código ........ 4
+   nomes de tarefa reescritos ....................... 295 (100%)
+   datas de calendário no arquivo final ............. 0
