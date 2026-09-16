@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
-"""Gera um recorte menor da instância completa, para testes rápidos.
-Uso: python codigo/gerar_recorte.py ZONA-1,ZONA-2 dados/instancia_media
+"""Gera um recorte menor da instancia completa, para testes rapidos.
+Uso: python3 codigo/gerar_recorte.py ZONA-1,ZONA-2 dados/instancia_media
 """
-import csv, sys, os
+import csv
+import os
+import sys
+
+from dados import ler_instancia
+
 zonas = set(sys.argv[1].split(',')) if len(sys.argv) > 1 else {'ZONA-1'}
 dest  = sys.argv[2] if len(sys.argv) > 2 else 'dados/instancia_media'
 orig  = sys.argv[3] if len(sys.argv) > 3 else 'dados/instancia_completa'
 
-def ler(n): return list(csv.DictReader(open(os.path.join(orig, n), encoding='utf-8'), delimiter=';'))
-A, P, R = ler('atividades.csv'), ler('precedencias.csv'), ler('recursos.csv')
+A, P, R = ler_instancia(orig)
 
 sel = [a for a in A if a['nivel'] == 'ATIVIDADE' and a['zona'] in zonas]
+if not sel:
+    print('nenhuma atividade encontrada para as zonas: %s' % ','.join(sorted(zonas)),
+          file=sys.stderr)
+    sys.exit(1)
+
 ids = {a['id'] for a in sel}
 pre = [p for p in P if p['predecessora'] in ids and p['sucessora'] in ids]
 pap = {x for a in sel for x in a['papel'].split(';') if x}

@@ -40,10 +40,10 @@ extensões. Consulte conforme precisar — não precisa ler de cabo a rabo agora
 ## Rodando em três comandos
 
 ```bash
-pip install -r codigo/requirements.txt
+python3 -m pip install -r codigo/requirements.txt
 
-python codigo/verificar.py dados/instancia_media        # audita os dados
-python codigo/modelo_minimo.py dados/instancia_media    # resolve
+python3 codigo/verificar.py dados/instancia_media        # audita os dados
+python3 codigo/modelo_minimo.py dados/instancia_media    # resolve
 ```
 
 Saída esperada:
@@ -52,13 +52,13 @@ Saída esperada:
 atividades: 28 | precedencias: 98 | horizonte: 138 dias
 prazo do cronograma praticado (referencia): 138 dias
 status  : Optimal
-makespan: 112 dias uteis
-praticado: 138 dias uteis  ->  ganho de 26 dias (18.8%)
+makespan: 109 dias uteis
+praticado: 138 dias uteis  ->  ganho de 29 dias (21.0%)
 VERIFICACAO: solucao respeita todas as precedencias e capacidades.
 ```
 
-Esses 26 dias são o trabalho inteiro em miniatura: o cronograma que uma pessoa montou
-leva 138 dias, a solução ótima com exatamente as mesmas restrições leva 112.
+Esses 29 dias são o trabalho inteiro em miniatura: o cronograma que uma pessoa montou
+leva 138 dias, a solução ótima com exatamente as mesmas restrições leva 109.
 
 ---
 
@@ -73,6 +73,7 @@ dados/
   instancia_completa/        242 atividades, 994 vínculos, para os resultados finais
 
 codigo/
+  dados.py                    leitura dos CSVs e convenções comuns
   verificar.py               13 checagens nos dados. Rode antes de modelar
   modelo_minimo.py           modelo base + verificação automática da solução
   gerar_recorte.py           cria recortes menores da instância completa

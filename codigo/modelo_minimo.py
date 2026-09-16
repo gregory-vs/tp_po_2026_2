@@ -7,56 +7,30 @@ Serve para validar que a leitura dos dados está certa e que o modelo fecha.
 Tudo o mais (revisões, zonas, órgãos públicos, reprogramação) entra depois, por cima.
 
 Uso:
-    python codigo/modelo_minimo.py dados/instancia_pequena
-    python codigo/modelo_minimo.py dados/instancia_media
-    python codigo/modelo_minimo.py dados/instancia_completa
+    python3 codigo/modelo_minimo.py dados/instancia_pequena
+    python3 codigo/modelo_minimo.py dados/instancia_media
+    python3 codigo/modelo_minimo.py dados/instancia_completa
 
-Requer:  pip install pulp
+Requer:  python3 -m pip install -r codigo/requirements.txt
 """
-import csv
 import sys
-import os
-import pulp
 
+from dados import carregar_modelagem
 
-# ---------------------------------------------------------------- leitura ---
-def ler_csv(caminho):
-    with open(caminho, encoding="utf-8") as f:
-        return list(csv.DictReader(f, delimiter=";"))
-
-
-def carregar(pasta):
-    atv = ler_csv(os.path.join(pasta, "atividades.csv"))
-    pre = ler_csv(os.path.join(pasta, "precedencias.csv"))
-    rec = ler_csv(os.path.join(pasta, "recursos.csv"))
-
-    # só as atividades de trabalho real; as linhas RESUMO agrupam outras
-    atv = [a for a in atv if a.get("nivel", "ATIVIDADE") == "ATIVIDADE"]
-    ids = {a["id"] for a in atv}
-    pre = [p for p in pre if p["predecessora"] in ids and p["sucessora"] in ids]
-
-    dur = {a["id"]: int(a["duracao_dias"]) for a in atv}
-    # uma atividade pode ter mais de um papel (ex.: "ANL-PRODUTO;ANL-ENGENHARIA")
-    papeis = {a["id"]: [p for p in a["papel"].split(";") if p] for a in atv}
-
-    col_cap = "capacidade" if "capacidade" in rec[0] else "capacidade_sugerida"
-    cap = {r["papel"]: int(r[col_cap]) for r in rec}
-    # papel que aparece em atividade mas não no arquivo de recursos: assume 1
-    for lista in papeis.values():
-        for p in lista:
-            cap.setdefault(p, 1)
-
-    # prazo do cronograma praticado: limite superior valido e muito mais apertado
-    # do que a soma das duracoes. Serve de horizonte e de referencia de comparacao.
-    praticado = max((int(a["fim_praticado"]) for a in atv if a.get("fim_praticado")),
-                    default=0) + 1
-
-    return atv, pre, dur, papeis, cap, praticado
+try:
+    import pulp
+except ModuleNotFoundError:
+    pulp = None
 
 
 # ----------------------------------------------------------------- modelo ---
-def resolver(pasta, horizonte=None, tempo_limite=120):
-    atv, pre, dur, papeis, cap, praticado = carregar(pasta)
+def resolver(pasta, horizonte=None, tempo_limite=120, log_solver=False):
+    if pulp is None:
+        print("ERRO: a biblioteca PuLP nao esta instalada.", file=sys.stderr)
+        print("Instale com: python3 -m pip install -r codigo/requirements.txt", file=sys.stderr)
+        sys.exit(2)
+
+    atv, pre, dur, papeis, cap, praticado = carregar_modelagem(pasta)
     A = [a["id"] for a in atv]
 
     # horizonte: o prazo praticado ja e uma solucao viavel, entao serve de teto.
@@ -65,7 +39,7 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
     print(f"atividades: {len(A)} | precedencias: {len(pre)} | horizonte: {H} dias")
     if praticado:
         print(f"prazo do cronograma praticado (referencia): {praticado} dias")
-    T = range(H + 1)
+    T = range(H)
 
     m = pulp.LpProblem("sequenciamento_projeto", pulp.LpMinimize)
 
@@ -73,9 +47,12 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
     x = {a: {t: pulp.LpVariable(f"x_{a}_{t}", cat="Binary") for t in T} for a in A}
     Cmax = pulp.LpVariable("Cmax", lowBound=0)
 
-    # início e término como expressões lineares (não são variáveis novas)
+    # Inicio e termino exclusivo como expressoes lineares.
+    # Nos CSVs, fim_praticado e inclusivo: fim = inicio + duracao - 1.
+    # No modelo, C = inicio + duracao facilita contar dias ativos como S <= t < C.
     S = {a: pulp.lpSum(t * x[a][t] for t in T) for a in A}
     C = {a: S[a] + dur[a] for a in A}
+    F = {a: C[a] - 1 for a in A}
 
     # --- objetivo: terminar o quanto antes
     m += Cmax
@@ -90,13 +67,13 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
         lag = int(p.get("lag_dias", 0) or 0)
         tipo = p.get("tipo_vinculo", "TI") or "TI"
         if tipo == "TI":      # término -> início
-            m += S[j] >= C[i] + lag, f"prec_{k}"
+            m += S[j] >= F[i] + lag, f"prec_{k}"
         elif tipo == "II":    # início -> início
             m += S[j] >= S[i] + lag, f"prec_{k}"
         elif tipo == "TT":    # término -> término
-            m += C[j] >= C[i] + lag, f"prec_{k}"
+            m += F[j] >= F[i] + lag, f"prec_{k}"
         elif tipo == "IT":    # início -> término
-            m += C[j] >= S[i] + lag, f"prec_{k}"
+            m += F[j] >= S[i] + lag, f"prec_{k}"
 
     # --- (3) capacidade: em cada dia, cada papel não passa da sua capacidade.
     # A atividade 'a' está em execução no dia t se começou em algum dia
@@ -118,7 +95,7 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
         m += Cmax >= C[a], f"mksp_{a}"
 
     # --- resolver
-    m.solve(pulp.PULP_CBC_CMD(msg=1, timeLimit=tempo_limite))
+    m.solve(pulp.PULP_CBC_CMD(msg=log_solver, timeLimit=tempo_limite))
 
     print()
     print("status  :", pulp.LpStatus[m.status])
@@ -134,7 +111,7 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
     linhas = []
     for a in atv:
         i = int(sum(t * x[a["id"]][t].value() for t in T))
-        linhas.append((i, i + dur[a["id"]], a["id"], a["nome"], a["papel"]))
+        linhas.append((i, i + dur[a["id"]] - 1, a["id"], a["nome"], a["papel"]))
     for i, f, aid, nome, pap in sorted(linhas)[:40]:
         print(f"  {aid:>5}  dia {i:>4} -> {f:>4}   {pap:<28} {nome[:46]}")
     if len(linhas) > 40:
@@ -147,14 +124,15 @@ def resolver(pasta, horizonte=None, tempo_limite=120):
 def verificar_solucao(atv, pre, dur, papeis, cap, S):
     """Confere se a solucao respeita tudo. Nunca confie no solver sem isso."""
     C = {a: S[a] + dur[a] for a in S}
+    F = {a: C[a] - 1 for a in S}
     erros = []
     for p in pre:
         i, j, lag, tp = (p["predecessora"], p["sucessora"],
                          int(p["lag_dias"] or 0), p["tipo_vinculo"])
-        ok = (S[j] >= C[i] + lag if tp == "TI" else
+        ok = (S[j] >= F[i] + lag if tp == "TI" else
               S[j] >= S[i] + lag if tp == "II" else
-              C[j] >= C[i] + lag if tp == "TT" else
-              C[j] >= S[i] + lag)
+              F[j] >= F[i] + lag if tp == "TT" else
+              F[j] >= S[i] + lag)
         if not ok:
             erros.append("precedencia %s %s->%s" % (tp, i, j))
     lim = max(C.values())

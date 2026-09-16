@@ -112,10 +112,10 @@ papel mais carregado em uma unidade e veja quanto o prazo cai.
 ## Como usar
 
 ```bash
-pip install pulp
+python3 -m pip install -r codigo/requirements.txt
 
-python verificar.py instancia_media       # audita os dados antes de modelar
-python modelo_minimo.py instancia_media   # resolve e confere a solução
+python3 codigo/verificar.py dados/instancia_media       # audita os dados antes de modelar
+python3 codigo/modelo_minimo.py dados/instancia_media   # resolve e confere a solução
 ```
 
 O `verificar.py` roda 13 checagens (integridade, ciclos, coerência com o praticado).
@@ -127,7 +127,7 @@ O `modelo_minimo.py` resolve com precedência + capacidade + prazo mínimo, e no
 Para gerar um recorte diferente:
 
 ```bash
-python gerar_recorte.py ZONA-1,ZONA-2 minha_instancia
+python3 codigo/gerar_recorte.py ZONA-1,ZONA-2 dados/minha_instancia
 ```
 
 ---

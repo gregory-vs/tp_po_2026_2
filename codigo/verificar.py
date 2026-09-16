@@ -5,22 +5,30 @@ Auditoria dos dados de uma instância.
 Roda antes de modelar. Se algum item vier com FALHA, o modelo vai dar problema
 (infactível, prazo absurdo ou resultado sem sentido) e a causa está aqui.
 
-Uso:  python codigo/verificar.py dados/instancia_media
+Uso:  python3 codigo/verificar.py dados/instancia_media
 """
-import csv, sys, os
+import sys
 from collections import Counter, defaultdict
 
+from dados import (
+    TIPOS_VINCULO,
+    atividades_reais,
+    capacidades,
+    duracoes,
+    fim_inclusivo,
+    ler_instancia,
+    papeis_por_atividade,
+    tem_cronograma_praticado,
+)
+
 pasta = sys.argv[1] if len(sys.argv) > 1 else 'dados/instancia_media'
-ler = lambda n: list(csv.DictReader(open(os.path.join(pasta, n), encoding='utf-8'),
-                                    delimiter=';'))
-A, P, R = ler('atividades.csv'), ler('precedencias.csv'), ler('recursos.csv')
-at = [a for a in A if a.get('nivel', 'ATIVIDADE') == 'ATIVIDADE']
+A, P, R = ler_instancia(pasta)
+at = atividades_reais(A)
 ids = {a['id'] for a in at}
-dur = {a['id']: int(a['duracao_dias']) for a in at}
-pap = {a['id']: [p for p in a['papel'].split(';') if p] for a in at}
-col = 'capacidade' if 'capacidade' in R[0] else 'capacidade_sugerida'
-cap = {r['papel']: int(r[col]) for r in R}
-tem_praticado = 'inicio_praticado' in at[0]
+dur = duracoes(at)
+pap = papeis_por_atividade(at)
+cap = capacidades(R)
+tem_praticado = tem_cronograma_praticado(at)
 
 falhas = []
 def chk(nome, condicao, detalhe=''):
@@ -46,7 +54,7 @@ chk('sem auto-referencia', all(p['predecessora'] != p['sucessora'] for p in P))
 chk('sem precedencia duplicada',
     len(P) == len({(p['predecessora'], p['sucessora'], p['tipo_vinculo']) for p in P}))
 chk('tipos de vinculo validos',
-    all(p['tipo_vinculo'] in ('TI', 'II', 'TT', 'IT') for p in P))
+    all(p['tipo_vinculo'] in TIPOS_VINCULO for p in P))
 
 # --- grafo aciclico (obrigatorio: com ciclo o modelo e infactivel)
 suc = defaultdict(list)
@@ -73,7 +81,7 @@ if tem_praticado:
     print()
     print('COERENCIA COM O CRONOGRAMA PRATICADO')
     chk('termino = inicio + duracao - 1',
-        all(fim[i] == ini[i] + dur[i] - 1 for i in ids))
+        all(fim[i] == fim_inclusivo(ini[i], dur[i]) for i in ids))
 
     def respeita(p):
         a, b, lag = p['predecessora'], p['sucessora'], int(p['lag_dias'])
