@@ -1,2 +1,0 @@
-def saudacao(nome: str) -> str:
-    return f"Ola, {nome}!"

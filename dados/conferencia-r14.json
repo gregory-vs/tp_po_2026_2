@@ -1,0 +1,52 @@
+{
+  "fonte": "R14 (documento mantido fora do repositorio publico)",
+  "sha256_pdf": "61d8f5c4cad98c6ab537cd64c02c87019891bca2c437d587c39c6b23fc9a44aa",
+  "linhas_pdf_extraidas_com_nome_e_duracao": 307,
+  "linhas_base": 295,
+  "atividades_base": 242,
+  "agrupadores_base": 53,
+  "duracoes_associadas_e_iguais": 295,
+  "inicios_associados_e_iguais_na_conversao_adotada": 295,
+  "duracoes_zero_na_fonte_extraida": 0,
+  "linhas_pdf_fora_da_base": 12,
+  "linhas_adicionais_com_conteudo_de_atividade_a_esclarecer": [
+    {
+      "descricao_generica": "Reuniao de alinhamento do conceito",
+      "duracao_dias": 3
+    },
+    {
+      "descricao_generica": "Consultoria normativa",
+      "duracao_dias": 20
+    },
+    {
+      "descricao_generica": "Apresentacao de projetos para a obra",
+      "duracao_dias": 5
+    }
+  ],
+  "prazo_base_normalizada_dias": 492,
+  "precedencias_base": 994,
+  "recursos_base": 34,
+  "auditoria_interna_da_base_original": "aprovada novamente apos restauracao, para completa e media; metadados mantem pendencia de cobertura",
+  "picos_da_completa_conferidos": 34,
+  "ajustes_R15": "desfeitos; arquivos de correspondencia e estado anterior arquivados fora do repositorio",
+  "limites": [
+    "A associacao usa ordem, duracao e inicio convertido; nao recupera o script original.",
+    "O relatorio antigo contabiliza 304 linhas; a extracao atual encontrou 307 e a diferenca ainda precisa ser explicada.",
+    "A lista individual dos 59 vinculos removidos nao foi recuperada.",
+    "A quantidade historica de 79 ajustes de datas nao foi reconstruida; nao indica alteracao de duracoes.",
+    "Os papeis preenchidos por regra ainda dependem de validacao operacional."
+  ],
+  "estado_atual_apos_ajustes_aprovados": {
+    "atividades": 243,
+    "agrupadores": 47,
+    "vinculos": 1008,
+    "recursos": 39,
+    "prazo_referencia_dias": 310,
+    "tres_linhas_adicionais": "incluidas",
+    "equipes_corrigidas": 15,
+    "linhas_execucao_obra_removidas": 8,
+    "base_aprovada_na_auditoria": true,
+    "registro": "ajustes-projeto/registro.json",
+    "observacao": "Os campos anteriores descrevem a conferencia da base original de 242 atividades, antes da adaptacao ao escopo de projeto."
+  }
+}

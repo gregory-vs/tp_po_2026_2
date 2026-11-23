@@ -1,163 +1,63 @@
-# Base de dados — cronograma de projeto multidisciplinar
+# Base de dados do estudo
 
-Instâncias de teste extraídas de um cronograma real de projeto de um empreendimento
-vertical de grande porte, **anonimizadas**.
+A base anonimizada foi preparada a partir do cronograma R14. Em 22/11/2026, restauramos os seis CSVs anteriores às alterações feitas com base no R15, após confirmar a versão correta. Nenhuma duração foi recalculada nessa restauração. Depois, incluímos três atividades e adaptamos equipes e escopo conforme as orientações operacionais encaminhadas por Thales. O estado atual está em `ajustes-projeto/registro.json`.
 
-Nada aqui identifica o empreendimento, a construtora, a incorporadora, os escritórios
-projetistas ou qualquer pessoa. Não há datas de calendário, nomes de produto, endereços
-nem contatos. Sobrou só o que o modelo precisa: duração, dependência e quem executa.
+## Conjuntos existentes
 
----
+| Pasta | Atividades | Vínculos | Referência na escala da base |
+| --- | ---: | ---: | ---: |
+| instancia_pequena | 12 | 24 | Exemplo manual, sem praticado |
+| instancia_media | 28 | 98 | 138 dias; recorte anterior preservado |
+| instancia_completa | 243 | 1008 | 310 dias; execução principal após os ajustes |
 
-## As três instâncias
+Não geraremos novos recortes nesta etapa. A média omite vínculos com atividades externas e usa capacidades herdadas da completa; não reproduz todas as condições do projeto.
 
-| Pasta | Ativid. | Vínculos | Prazo praticado | Para que serve |
-|---|---:|---:|---:|---|
-| `instancia_pequena` | 12 | 24 | — | montada à mão. Começar por aqui, dá pra conferir no papel |
-| `instancia_media` | 28 | 98 | 138 dias | um bloco construtivo real. Roda em segundos no CBC |
-| `instancia_completa` | 242 | 994 | 492 dias | tudo. Para os resultados finais e teste de escalabilidade |
+## Arquivos de entrada
 
-Cada pasta tem `atividades.csv`, `precedencias.csv` e `recursos.csv` — CSV com
-separador `;`, codificação UTF-8.
+Os CSVs usam UTF-8 e ponto e vírgula como separador.
 
----
+- `atividades.csv`: identificador e nome anônimos, nível, tipo, entregável, disciplina, fase, revisão, zona, equipe (`papel`), duração, índices do cronograma normalizado, percentual e estado.
+- `precedencias.csv`: predecessora, sucessora, tipo de vínculo (TI, II, TT ou IT) e espera (`lag_dias`).
+- `recursos.csv`: papel, categoria, número de atividades e capacidade. A pequena usa `capacidade`; as reais usam `capacidade_observada` e `capacidade_sugerida`.
 
-## atividades.csv
+Na completa, `nivel=ATIVIDADE` seleciona as 243 atividades. Os 47 `AGRUPADOR` ficam fora do modelo. A pequena já vem sem agrupadores.
 
-| Coluna | O que é |
-|---|---|
-| `id` | identificador (`T001`, `A01`…) |
-| `nome` | rótulo montado a partir dos outros campos. Único em toda a instância |
-| `nivel` | `ATIVIDADE` = trabalho real. `AGRUPADOR` = linha que só soma outras no cronograma original. **Use apenas `ATIVIDADE`** (a coluna não existe na pequena e na média, que já vêm filtradas) |
-| `tipo` | o que a atividade é — ver tabela abaixo |
-| `entregavel` | id da cadeia de revisões a que ela pertence (`E001`…). Junta o R00, a análise, o R01 etc. do mesmo pacote |
-| `disciplina` | sigla da especialidade. `GERAL` quando a atividade não é de uma disciplina específica |
-| `fase` | `EP`, `AP`, `PL`, `EX` ou `GERAL` |
-| `revisao` | `R00`, `R01`, `R02`, `R03`. Vazio quando não se aplica |
-| `zona` | `ZONA-1` a `ZONA-4` (blocos construtivos). Vazio = atividade do empreendimento todo |
-| `papel` | quem executa. Vários papéis vêm separados por `;` |
-| `duracao_dias` | duração em **dias úteis** |
-| `inicio_praticado` / `fim_praticado` | o que o cronograma real fez, em dias úteis contados do início do projeto. **É referência de comparação, não restrição** |
-| `pct_concluido` | percentual executado na data de status do cronograma |
-| `estado` | `CONCLUIDA`, `EM_ANDAMENTO` ou `NAO_INICIADA` |
+Vários papéis em uma atividade são separados por ponto e vírgula dentro do campo CSV, que fica entre aspas. Cada equipe listada conta uma atividade aberta durante a janela positiva. Há seis atividades compartilhadas na completa: as quatro originais e duas reuniões adicionadas. As cinco áreas participantes adicionais são representadas por códigos CLIENTE-01 a CLIENTE-05; seus nomes originais ficam somente no mapa privado.
 
-### Valores de `tipo`
+As durações da base de origem coincidiram com as declaradas no R14 nas 295 linhas associadas. As três atividades adicionadas usam as durações declaradas de 3, 20 e 5 dias. Não há duração zero nessa base. O código mantém suporte a eventos de duração zero para uso futuro, sem ocupação de equipe.
 
-| Valor | Significado | Comportamento esperado no modelo |
-|---|---|---|
-| `EMISSAO` | um projetista produz e entrega uma revisão | consome a equipe da disciplina |
-| `ANALISE` | a equipe do contratante revisa e devolve comentários | consome a equipe de análise — o gargalo |
-| `COMPATIBILIZACAO` | junta os modelos e procura conflitos entre disciplinas | recurso de coordenação, capacidade baixa |
-| `TRAMITE-EXTERNO` | espera por órgão público | **não consome recurso nosso e não comprime** |
-| `GATE` | reunião ou marco de validação | decisor, capacidade 1 |
-| `CONSULTORIA` | parecer de consultor externo | recurso dedicado |
-| `RETRABALHO` | ajuste após comentário, envolvendo várias disciplinas | multi-disciplina |
+## O que significa o cronograma praticado
 
-### Siglas de disciplina
+`inicio_praticado` e `fim_praticado` são índices em uma escala normalizada de dias úteis. Os términos são coerentes com `fim = inicio + duracao - 1`. Eles servem para comparação no mesmo recorte e sob as mesmas regras; não são restrições que congelam as atividades.
 
-`ARQ` arquitetura · `ARI` interiores · `EST` estrutura · `HID` hidráulica ·
-`ELE` elétrica · `CLI` climatização · `PCI` combate a incêndio · `PRE` pressurização ·
-`GAS` gás · `AUT` automação · `FUN` fundação · `PSG` paisagismo · `LUM` luminotécnico ·
-`ACU` acústica · `CXO` caixilhos · `VED` vedações · `IMP` impermeabilização ·
-`COM` comunicação visual · `SMOP` drenagem urbana · `CLASH` compatibilização ·
-`CTV` / `NBR` / `INS` consultorias · `GERAL` sem disciplina específica
+Esses índices não prometem datas civis exatas. A preparação converteu datas e normalizou intervalos; não vamos reconstruir a lista de feriados e recessos. Segundo Henrique, os 79 ajustes do relatório antigo foram de datas, preservando durações. O histórico individual desses ajustes não foi recuperado.
 
----
+## Capacidades
 
-## precedencias.csv
+As capacidades da completa são os picos de atividades abertas no cronograma normalizado. Após incluir atividades, corrigir equipes e retirar obra, recalculamos os 39 picos e os cadastramos. Arquitetura passou de sete para seis e elétrica de três para uma atividade simultânea; os demais recursos antigos mantiveram seus picos. As cinco áreas adicionadas têm pico de uma atividade. São estimativas, não máximos operacionais comprovados. As atribuições de papéis preenchidas por regra ainda precisam ser validadas com quem conhece o processo.
 
-| Coluna | O que é |
-|---|---|
-| `predecessora` | id da atividade que vem antes |
-| `sucessora` | id da atividade que vem depois |
-| `tipo_vinculo` | `TI`, `II`, `TT` ou `IT` |
-| `lag_dias` | folga obrigatória entre as duas |
+A referência é viável internamente na base preparada: a auditoria confere durações, precedências e capacidades. Somente sob o mesmo conjunto de dados e regras um ótimo comprovado não pode ser pior que essa referência.
 
-### Os quatro tipos de vínculo
+## Preparação anterior e limitações
 
-| Sigla | Nome | Restrição correspondente |
-|---|---|---|
-| `TI` | término–início | `inicio[b] >= fim[a] + lag` |
-| `II` | início–início | `inicio[b] >= inicio[a] + lag` |
-| `TT` | término–término | `fim[b] >= fim[a] + lag` |
-| `IT` | início–término | `fim[b] >= inicio[a] + lag` |
+O relatório antigo informa expansão de 156 referências a agrupadores, remoção de duplicatas e descarte de 22 arcos por ciclos e 37 por incompatibilidade com as datas normalizadas. A lista individual não foi salva. Não afirmar que todos eram erros de extração ou que as dependências reais foram integralmente validadas.
 
-`TI` é a grande maioria. Os outros três são poucos mas mudam o resultado: tratar tudo
-como `TI` serializa o cronograma artificialmente e infla o prazo.
+Henrique informou preenchimento de 34 papéis, 44 disciplinas e 58 fases por regra. O CSV não identifica individualmente esses preenchimentos. Há quatro atividades isoladas; elas não são todas marcos. A execução de obra foi retirada: duas atividades e seis agrupadores. A apresentação de projetos à obra permanece como entrega do processo de projeto. Os quinze vínculos novos preservam as relações declaradas das atividades incluídas, expandindo agrupadores somente para as filhas representadas. Três agrupadores fechados não têm filhas na base; essa limitação de cobertura permanece documentada.
 
----
+A extração atual do R14 encontrou 307 linhas visíveis, enquanto o relatório antigo contabiliza 304. As três linhas adicionais foram incluídas após autorização. O arquivo `conferencia-r14.json` preserva a conferência inicial e aponta o estado atual; `validacao.json` registra a aprovação da base de projeto na auditoria. A cobertura de atividades ocultas do PDF não foi reconstruída. Não há mais 52 durações pendentes do R15.
 
-## recursos.csv
+## Execução
 
-| Coluna | O que é |
-|---|---|
-| `papel` | identificador, igual ao usado em `atividades.papel` |
-| `categoria` | `PROJETISTA`, `ANALISTA`, `CONSULTOR`, `ORGAO_PUBLICO`, `DECISOR`, `COLETIVO` |
-| `n_atividades` | em quantas atividades esse papel aparece |
-| `capacidade_observada` | maior número de atividades desse papel rodando ao mesmo tempo **no cronograma praticado** |
-| `capacidade_sugerida` | o que usar como $R_k$ no modelo. Vem da capacidade observada |
+Edite `codigo/configuracao.py` e execute `python codigo/main.py`. A instância completa é o padrão. A auditoria de entrada roda automaticamente antes da montagem do modelo. A base de projeto passou na auditoria de entrada. O ambiente virtual do projeto agora tem PuLP 3.3.0 e foi testado com CBC em casos sintéticos. A otimização da base real ainda depende da continuação conjunta da validação técnica; nenhum experimento dessa base foi executado.
 
-**De onde vem a capacidade.** O cronograma não diz quantas pessoas cada escritório tem.
-Mas diz quantas atividades daquele papel rodaram simultaneamente — e esse pico é, por
-definição, a menor capacidade que torna o cronograma praticado viável. Usar esse número
-tem uma consequência importante: **o cronograma praticado é sempre uma solução viável do
-modelo**, então o ótimo encontrado nunca pode ser pior que ele. Se der pior, tem bug.
+Para executar somente a auditoria, use `python codigo/verificar.py`. A validação da solução, depois de resolver, fica em `codigo/validacao.py`.
 
-Essa é uma estimativa por baixo (a equipe pode ter folga que o cronograma não usou), e
-por isso mesmo é um bom parâmetro para análise de sensibilidade: aumente a capacidade do
-papel mais carregado em uma unidade e veja quanto o prazo cai.
+## Privacidade e evidências
 
----
+Os PDFs do contratante, os mapas de identificadores e a comparação detalhada ficam fora do repositório público. O estado anterior à restauração foi arquivado de forma privada. O repositório mantém somente dados anonimizados e resultados agregados; o script obsoleto que reaplicava alterações do R15 foi removido.
 
-## Como usar
+`relatorio_qualidade.txt` é o registro da preparação anterior. Não foi reescrito para fingir que sua contagem foi reproduzida. A auditoria atual deve ser consultada em conjunto com `conferencia-r14.json` e com a conferência em `docs/conferencia-cronograma-original.md`.
 
-```bash
-python3 -m pip install -r codigo/requirements.txt
+## Prazo depois do corte de obra
 
-python3 codigo/verificar.py dados/instancia_media       # audita os dados antes de modelar
-python3 codigo/modelo_minimo.py dados/instancia_media   # resolve e confere a solução
-```
-
-O `verificar.py` roda 13 checagens (integridade, ciclos, coerência com o praticado).
-Se alguma falhar, o modelo vai dar problema e a causa está ali.
-
-O `modelo_minimo.py` resolve com precedência + capacidade + prazo mínimo, e no fim
-**confere a própria solução** contra todas as precedências e capacidades.
-
-Para gerar um recorte diferente:
-
-```bash
-python3 codigo/gerar_recorte.py ZONA-1,ZONA-2 dados/minha_instancia
-```
-
----
-
-## Cinco coisas que vão poupar tempo
-
-1. **Filtre `nivel = ATIVIDADE`** na instância completa. As linhas `AGRUPADOR` são
-   barras-mãe do cronograma; incluí-las conta o mesmo trabalho duas vezes.
-2. **Use `fim_praticado` como horizonte.** O prazo praticado já é uma solução viável,
-   então serve de teto. Usar a soma das durações como horizonte multiplica o número de
-   variáveis por cinco e trava o solver.
-3. **As datas são em dias úteis**, contadas do início do projeto. Não há calendário e
-   `fim = inicio + duracao - 1` vale sempre.
-4. **O praticado não é o ótimo.** Ele é o que uma pessoa montou arrastando barras.
-   É a referência de comparação, e o resultado principal do trabalho é a diferença.
-5. **Há dependência circular no mundo real** (estrutura ↔ instalações, arquitetura ↔
-   shafts). Nos dados ela aparece já resolvida como duas revisões da mesma disciplina.
-   Não tente "consertar" isso: é assim que funciona.
-
----
-
-## Limitações conhecidas
-
-| Item | Situação |
-|---|---|
-| 4 atividades sem nenhum vínculo na instância completa | são marcos soltos no cronograma original. Ficam livres no modelo, não atrapalham |
-| 37 vínculos descartados na preparação | o próprio cronograma não os respeitava, o que indica erro de extração. Mantê-los impediria o modelo de reproduzir o praticado |
-| 22 arcos que fechavam ciclo, removidos | rede de precedência precisa ser acíclica |
-| Disciplina/fase `GERAL` | atividades administrativas e marcos que não pertencem a uma disciplina |
-| Capacidade estimada por baixo | ver a seção de recursos acima |
-
-Tudo isso está registrado em `relatorio_qualidade.txt`, com os números de cada etapa
-da preparação.
+O prazo atual de referência é 310 dias úteis normalizados. Os 492 dias descreviam o conjunto anterior, com execução de obra. A diferença de 182 dias resulta da mudança de escopo, não de uma solução otimizada. Os inícios e durações das atividades de projeto existentes foram preservados. As alterações de equipe abrangem oito análises com projetistas, quatro análises de estrutura, dois gates e a emissão de plantas de contrato. Cinco emissões de briefing/documentos do cliente foram mantidas com ele. As atribuições de SMOP e as quatro atividades compartilhadas originais foram preservadas.

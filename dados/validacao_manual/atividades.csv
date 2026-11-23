@@ -1,0 +1,4 @@
+id;nome;nivel;tipo;disciplina;fase;papel;duracao_dias
+A;Emissao A;ATIVIDADE;EMISSAO;GERAL;GERAL;PROJETO;3
+B;Emissao B;ATIVIDADE;EMISSAO;GERAL;GERAL;PROJETO;2
+C;Analise C;ATIVIDADE;ANALISE;GERAL;GERAL;ANALISE;2

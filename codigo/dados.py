@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Leitura e convencoes comuns das instancias de cronograma."""
 import csv
+import json
 import os
 
 
@@ -24,10 +25,21 @@ def atividades_reais(atividades):
 
 
 def precedencias_reais(precedencias, ids):
-    return [
+    invalidas = [
         p for p in precedencias
-        if p["predecessora"] in ids and p["sucessora"] in ids
+        if p["predecessora"] not in ids or p["sucessora"] not in ids
     ]
+    if invalidas:
+        detalhes = "; ".join(
+            f"{p['predecessora']}->{p['sucessora']}"
+            for p in invalidas
+        )
+        raise ValueError(
+            "Precedencias citam atividades ausentes do conjunto modelado: "
+            + detalhes
+            + ". Confira os identificadores; prepare recortes explicitamente."
+        )
+    return list(precedencias)
 
 
 def duracoes(atividades):
@@ -49,24 +61,39 @@ def capacidades(recursos, papeis=None):
         capacidade = {r["papel"]: int(r[coluna]) for r in recursos}
 
     if papeis:
-        for lista in papeis.values():
-            for papel in lista:
-                capacidade.setdefault(papel, 1)
+        ausentes = sorted({
+            papel for lista in papeis.values() for papel in lista
+            if papel not in capacidade
+        })
+        if ausentes:
+            raise ValueError(
+                "Equipes sem capacidade cadastrada em recursos.csv: "
+                + ", ".join(ausentes)
+                + ". Cadastre as capacidades antes de executar o modelo."
+            )
 
     return capacidade
 
 
 def tem_cronograma_praticado(atividades):
-    return bool(atividades and "inicio_praticado" in atividades[0])
+    return bool(atividades and all(
+        a.get("inicio_praticado", "") != ""
+        and a.get("fim_praticado", "") != ""
+        and a.get("referencia_praticada_validada", "SIM") == "SIM"
+        for a in atividades
+    ))
 
 
 def prazo_praticado(atividades):
+    if not tem_cronograma_praticado(atividades):
+        return 0
     fins = [int(a["fim_praticado"]) for a in atividades if a.get("fim_praticado")]
     return max(fins, default=-1) + 1
 
 
 def fim_inclusivo(inicio, duracao):
-    return inicio + duracao - 1
+    # Duracao zero representa um evento, sem intervalo de ocupacao.
+    return inicio + max(duracao, 1) - 1
 
 
 def termino_exclusivo(inicio, duracao):
@@ -74,8 +101,20 @@ def termino_exclusivo(inicio, duracao):
 
 
 def carregar_modelagem(pasta):
+    status = ler_status_validacao(pasta)
     atividades, precedencias, recursos = ler_instancia(pasta)
+    # Importacao local evita ciclo entre leitura e auditoria. Os CSVs sao lidos
+    # uma unica vez e os mesmos registros conferidos seguem para o modelo.
+    from codigo.verificar import auditar_dados
+
+    falhas = auditar_dados(atividades, precedencias, recursos,
+                          status=status, rotulo=str(pasta))
+    if falhas:
+        raise ValueError("Auditoria dos dados reprovada: " + "; ".join(falhas))
     atividades = atividades_reais(atividades)
+    if not status and any(a.get("referencia_praticada_validada") == "NAO"
+                          for a in atividades):
+        raise ValueError("Base corrigida sem registro de validacao; confira validacao.json.")
     ids = {a["id"] for a in atividades}
     precedencias = precedencias_reais(precedencias, ids)
     duracao = duracoes(atividades)
@@ -83,3 +122,11 @@ def carregar_modelagem(pasta):
     capacidade = capacidades(recursos, papeis)
     praticado = prazo_praticado(atividades)
     return atividades, precedencias, duracao, papeis, capacidade, praticado
+
+
+def ler_status_validacao(pasta):
+    caminho = os.path.join(pasta, "validacao.json")
+    if not os.path.exists(caminho):
+        return None
+    with open(caminho, encoding="utf-8") as arquivo:
+        return json.load(arquivo)

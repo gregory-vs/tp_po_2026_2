@@ -1,0 +1,37 @@
+% !TeX root = ../main.tex
+
+% Codificação, idioma e tipografia serifada para texto e matemática.
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+
+% Uma coluna, margens uniformes e parágrafos com recuo.
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\linespread{1.08}
+
+% Figuras, tabelas e legendas.
+\usepackage{graphicx}
+\graphicspath{{imagens/}{imagens/logos/}}
+\usepackage{booktabs,array,tabularx,multirow}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{subcaption}
+\usepackage[section]{placeins}
+
+% Seções numeradas com hierarquia discreta.
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{1.5\baselineskip}{0.6\baselineskip}
+\titlespacing*{\subsection}{0pt}{\baselineskip}{0.4\baselineskip}
+
+% Links e referências cruzadas; carregar hyperref por último.
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\AtBeginDocument{\renewcommand{\refname}{Referências bibliográficas}}

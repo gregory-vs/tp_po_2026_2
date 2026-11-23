@@ -1,0 +1,12 @@
+Verificacao apos ajustes de projeto, 22/11/2026
+
+243 atividades; 47 agrupadores; 1008 vinculos; 39 recursos.
+Prazo de referencia normalizado: 310 dias.
+Auditoria completa: aprovada, sem violacoes de precedencia ou capacidade.
+Quinze atribuicoes de equipe corrigidas.
+Quatro atividades compartilhadas originais e papeis de SMOP preservados.
+Inicios, duracoes e demais campos das atividades remanescentes preservados.
+Todos os 39 picos recalculados e iguais aos cadastrados.
+Carregamento principal liberado pela auditoria, sem executar solver.
+A mudanca de 492 para 310 dias e de escopo, nao ganho da otimizacao.
+Cobertura de tarefas ocultas em agrupadores nao foi reconstruida.

@@ -1,0 +1,15 @@
+{
+  "fonte": "Cronograma R14; base anonimizada da preparacao anterior restaurada",
+  "data_conferencia": "2026-11-22",
+  "pronta_para_experimentos": false,
+  "atividades": 28,
+  "duracoes_conferidas": 28,
+  "atividades_com_duracao_pendente": [],
+  "referencia_praticada_validada_no_modelo": true,
+  "referencia_tipo": "Cronograma normalizado na escala de dias uteis da base; nao equivale a datas civis exatas",
+  "capacidades_conferidas_na_base_completa": true,
+  "precedencias_tratadas_na_preparacao_anterior": true,
+  "remocoes_de_vinculos_reconstruidas": false,
+  "cobertura_integral_do_R14_confirmada": false,
+  "motivo": "Instancia historica preservada, sem os ajustes atuais de equipes e escopo. A execucao principal usa a instancia completa de projeto."
+}

@@ -1,0 +1,32 @@
+{
+  "latex-workshop.formatting.latex": "latexindent",
+  "latex-workshop.formatting.latexindent.path": "C:/Users/Thales Vasconcelos/Documents/Repos/tp_po_2026_2/.vscode/tools/latexindent.exe",
+  "[latex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+  "latex-workshop.latex.outDir": "build",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-pdf",
+        "-no-shell-escape",
+        "-interaction=nonstopmode",
+        "-synctex=1",
+        "-outdir=build",
+        "%DOC%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (artigo)",
+      "tools": [
+        "latexmk"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "latexmk (artigo)"
+}

@@ -1,4 +1,9 @@
 {
+  "latex-workshop.formatting.latex": "latexindent",
+  "latex-workshop.formatting.latexindent.path": "C:/Users/Thales Vasconcelos/Documents/Repos/tp_po_2026_2/.vscode/tools/latexindent.exe",
+  "[latex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
   "latex-workshop.latex.outDir": "%DIR%/build",
   "latex-workshop.latex.autoBuild.run": "onSave",
   "latex-workshop.latex.tools": [

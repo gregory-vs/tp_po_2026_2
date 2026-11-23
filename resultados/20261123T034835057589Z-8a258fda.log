@@ -1,0 +1,85 @@
+Welcome to the CBC MILP Solver 
+Version: 2.10.3 
+Build Date: Dec 15 2019 
+
+command line - C:\Users\Thales Vasconcelos\Documents\Repos\tp_po_2026_2\.venv\Lib\site-packages\pulp\apis\../solverdir/cbc/win/i64/cbc.exe cbc-_2j_7a3x\modelo.mps -mips cbc-_2j_7a3x\modelo.mst -sec 1800 -ratio 0 -allow 0 -timeMode elapsed -branch -printingOptions all -solution cbc-_2j_7a3x\modelo.sol (default strategy 1)
+At line 2 NAME          MODEL
+At line 3 ROWS
+At line 13589 COLUMNS
+At line 1854390 RHS
+At line 1867975 BOUNDS
+At line 1940357 ENDATA
+Problem MODEL has 13584 rows, 72382 columns and 1696037 elements
+Coin0008I MODEL read with 0 errors
+opening mipstart file .\cbc-_2j_7a3x\modelo.mst.
+MIPStart values read for 72382 variables.
+seconds was changed from 1e+100 to 1800
+ratioGap was changed from 0 to 0
+allowableGap was changed from 1e-10 to 0
+Option for timeMode changed from cpu to elapsed
+Continuous objective value is 187 - 3.18 seconds
+Cgl0003I 0 fixed, 0 tightened bounds, 510 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 486 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 458 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 431 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 401 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 377 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 347 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 328 strengthened rows, 0 substitutions
+Cgl0003I 0 fixed, 0 tightened bounds, 295 strengthened rows, 0 substitutions
+Cgl0004I processed model has 12435 rows, 72382 columns (72381 integer (72381 of which binary)) and 1691764 elements
+Cutoff increment increased from 1e-05 to 0.9999
+Cbc0045I MIPStart provided solution with cost 310
+Cbc0012I Integer solution of 310 found by Reduced search after 0 iterations and 0 nodes (11.51 seconds)
+Cbc0038I Full problem 12435 rows 72382 columns, reduced to 1814 rows 781 columns
+Cbc0031I 542 added rows had average density of 473.54428
+Cbc0013I At root node, 542 cuts changed objective from 187 to 187 in 10 passes
+Cbc0014I Cut generator 0 (Probing) - 2 row cuts average 4.0 elements, 1 column cuts (367 active)  in 3.347 seconds - new frequency is -100
+Cbc0014I Cut generator 1 (Gomory) - 123 row cuts average 952.0 elements, 0 column cuts (0 active)  in 14.588 seconds - new frequency is -100
+Cbc0014I Cut generator 2 (Knapsack) - 0 row cuts average 0.0 elements, 0 column cuts (0 active)  in 0.064 seconds - new frequency is -100
+Cbc0014I Cut generator 3 (Clique) - 64 row cuts average 4.4 elements, 0 column cuts (0 active)  in 0.040 seconds - new frequency is -100
+Cbc0014I Cut generator 4 (MixedIntegerRounding2) - 6365 row cuts average 493.4 elements, 0 column cuts (0 active)  in 1.833 seconds - new frequency is 1
+Cbc0014I Cut generator 5 (FlowCover) - 0 row cuts average 0.0 elements, 0 column cuts (0 active)  in 0.281 seconds - new frequency is -100
+Cbc0014I Cut generator 6 (TwoMirCuts) - 92 row cuts average 422.4 elements, 0 column cuts (0 active)  in 4.433 seconds - new frequency is -100
+Cbc0010I After 0 nodes, 1 on tree, 310 best solution, best possible 187 (566.18 seconds)
+Cbc0038I Full problem 12435 rows 72382 columns, reduced to 1327 rows 556 columns
+Cbc0010I After 100 nodes, 39 on tree, 310 best solution, best possible 187 (672.39 seconds)
+Cbc0010I After 200 nodes, 45 on tree, 310 best solution, best possible 187 (718.94 seconds)
+Cbc0010I After 300 nodes, 50 on tree, 310 best solution, best possible 187 (760.81 seconds)
+Cbc0038I Full problem 12435 rows 72382 columns, reduced to 728 rows 315 columns
+Cbc0012I Integer solution of 308 found by RINS after 254860 iterations and 400 nodes (815.25 seconds)
+Cbc0010I After 400 nodes, 41 on tree, 308 best solution, best possible 187 (815.30 seconds)
+Cbc0038I Full problem 12435 rows 72382 columns, reduced to 965 rows 422 columns
+Cbc0010I After 500 nodes, 56 on tree, 308 best solution, best possible 187 (851.56 seconds)
+Cbc0010I After 600 nodes, 70 on tree, 308 best solution, best possible 187 (878.80 seconds)
+Cbc0010I After 700 nodes, 86 on tree, 308 best solution, best possible 187 (902.45 seconds)
+Cbc0038I Full problem 12435 rows 72382 columns, reduced to 400 rows 249 columns
+Cbc0012I Integer solution of 307 found by RINS after 288916 iterations and 800 nodes (924.12 seconds)
+Cbc0010I After 800 nodes, 83 on tree, 307 best solution, best possible 187 (924.13 seconds)
+Cbc0020I Exiting on maximum time
+Cbc0005I Partial search - best objective 307 (best possible 187), took 634163 iterations and 823 nodes (2178.78 seconds)
+Cbc0032I Strong branching done 10620 times (322672 iterations), fathomed 0 nodes and fixed 936 variables
+Cbc0035I Maximum depth 222, 1505 variables fixed on reduced cost
+Cuts at root node changed objective from 187 to 187
+Probing was tried 10 times and created 3 cuts of which 366 were active after adding rounds of cuts (3.347 seconds)
+Gomory was tried 10 times and created 123 cuts of which 0 were active after adding rounds of cuts (14.588 seconds)
+Knapsack was tried 10 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.064 seconds)
+Clique was tried 10 times and created 64 cuts of which 0 were active after adding rounds of cuts (0.040 seconds)
+MixedIntegerRounding2 was tried 131 times and created 31011 cuts of which 0 were active after adding rounds of cuts (14.298 seconds)
+FlowCover was tried 10 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.281 seconds)
+TwoMirCuts was tried 10 times and created 92 cuts of which 0 were active after adding rounds of cuts (4.433 seconds)
+ZeroHalf was tried 1 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.228 seconds)
+
+Result - Stopped on time limit
+
+Objective value:                307.00000000
+Lower bound:                    187.000
+Gap:                            0.64
+Enumerated nodes:               823
+Total iterations:               634163
+Time (CPU seconds):             2180.41
+Time (Wallclock seconds):       2180.41
+
+Option for printingOptions changed from normal to all
+Total time (CPU seconds):       2181.35   (Wallclock seconds):       2181.35
+

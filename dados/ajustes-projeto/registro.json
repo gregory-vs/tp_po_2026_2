@@ -1,0 +1,424 @@
+{
+  "atividades_adicionadas": [
+    {
+      "id": "T296",
+      "nome": "Gate | GERAL | GERAL | alinhamento",
+      "nivel": "ATIVIDADE",
+      "tipo": "GATE",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "ANL-PRODUTO;ANL-ENGENHARIA;CLIENTE-01;CLIENTE-02",
+      "duracao_dias": "3",
+      "inicio_praticado": "121",
+      "fim_praticado": "123",
+      "pct_concluido": "100",
+      "estado": "CONCLUIDA"
+    },
+    {
+      "id": "T297",
+      "nome": "Consultoria | NBR | AP | R00",
+      "nivel": "ATIVIDADE",
+      "tipo": "CONSULTORIA",
+      "entregavel": "",
+      "disciplina": "NBR",
+      "fase": "AP",
+      "revisao": "R00",
+      "zona": "",
+      "papel": "CONS-NORMA",
+      "duracao_dias": "20",
+      "inicio_praticado": "156",
+      "fim_praticado": "175",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T298",
+      "nome": "Gate | GERAL | AP | apresentacao",
+      "nivel": "ATIVIDADE",
+      "tipo": "GATE",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "AP",
+      "revisao": "",
+      "zona": "",
+      "papel": "ANL-ENGENHARIA;ANL-PRODUTO;CLIENTE-03;CLIENTE-04;CLIENTE-05",
+      "duracao_dias": "5",
+      "inicio_praticado": "298",
+      "fim_praticado": "302",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    }
+  ],
+  "vinculos_adicionados": [
+    {
+      "predecessora": "T046",
+      "sucessora": "T296",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T296",
+      "sucessora": "T047",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T066",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T067",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T068",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T069",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T070",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T071",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T072",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T073",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T074",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T075",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T076",
+      "sucessora": "T297",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T258",
+      "sucessora": "T298",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    },
+    {
+      "predecessora": "T255",
+      "sucessora": "T298",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    }
+  ],
+  "atividades_removidas": [
+    {
+      "id": "T288",
+      "nome": "Emissao | GERAL | GERAL (19)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "700",
+      "inicio_praticado": "452",
+      "fim_praticado": "1151",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T289",
+      "nome": "Emissao | GERAL | GERAL (20)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "640",
+      "inicio_praticado": "452",
+      "fim_praticado": "1091",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T290",
+      "nome": "Emissao | GERAL | GERAL (21)",
+      "nivel": "ATIVIDADE",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "20",
+      "inicio_praticado": "452",
+      "fim_praticado": "471",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T291",
+      "nome": "Emissao | GERAL | GERAL (22)",
+      "nivel": "ATIVIDADE",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "20",
+      "inicio_praticado": "472",
+      "fim_praticado": "491",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T292",
+      "nome": "Emissao | GERAL | GERAL (23)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "100",
+      "inicio_praticado": "492",
+      "fim_praticado": "591",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T293",
+      "nome": "Emissao | GERAL | GERAL (24)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "200",
+      "inicio_praticado": "592",
+      "fim_praticado": "791",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T294",
+      "nome": "Emissao | GERAL | GERAL (25)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "300",
+      "inicio_praticado": "792",
+      "fim_praticado": "1091",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    },
+    {
+      "id": "T295",
+      "nome": "Emissao | GERAL | GERAL (26)",
+      "nivel": "AGRUPADOR",
+      "tipo": "EMISSAO",
+      "entregavel": "",
+      "disciplina": "GERAL",
+      "fase": "GERAL",
+      "revisao": "",
+      "zona": "",
+      "papel": "MULTI-DISCIPLINAS",
+      "duracao_dias": "60",
+      "inicio_praticado": "1092",
+      "fim_praticado": "1151",
+      "pct_concluido": "0",
+      "estado": "NAO_INICIADA"
+    }
+  ],
+  "vinculos_removidos": [
+    {
+      "predecessora": "T290",
+      "sucessora": "T291",
+      "tipo_vinculo": "TI",
+      "lag_dias": "0"
+    }
+  ],
+  "equipes_corrigidas": [
+    {
+      "id": "T045",
+      "papel_anterior": "PROJ-INT",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T060",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T104",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T169",
+      "papel_anterior": "PROJ-INT",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T196",
+      "papel_anterior": "PROJ-ELE",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T197",
+      "papel_anterior": "PROJ-ELE",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T230",
+      "papel_anterior": "ANL-COORD",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T232",
+      "papel_anterior": "ANL-COORD",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T234",
+      "papel_anterior": "ANL-COORD",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T236",
+      "papel_anterior": "ANL-COORD",
+      "papel_atual": "ANL-ENGENHARIA"
+    },
+    {
+      "id": "T259",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T260",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T261",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T262",
+      "papel_anterior": "PROJ-ARQ",
+      "papel_atual": "ANL-PRODUTO"
+    },
+    {
+      "id": "T277",
+      "papel_anterior": "ANL-PRODUTO",
+      "papel_atual": "PROJ-ARQ"
+    }
+  ],
+  "capacidades_alteradas": [
+    {
+      "papel": "PROJ-ARQ",
+      "anterior": "7",
+      "atual": 6
+    },
+    {
+      "papel": "PROJ-ELE",
+      "anterior": "3",
+      "atual": 1
+    },
+    {
+      "papel": "CLIENTE-01",
+      "anterior": null,
+      "atual": 1
+    },
+    {
+      "papel": "CLIENTE-02",
+      "anterior": null,
+      "atual": 1
+    },
+    {
+      "papel": "CLIENTE-03",
+      "anterior": null,
+      "atual": 1
+    },
+    {
+      "papel": "CLIENTE-04",
+      "anterior": null,
+      "atual": 1
+    },
+    {
+      "papel": "CLIENTE-05",
+      "anterior": null,
+      "atual": 1
+    }
+  ],
+  "prazo_anterior": 492,
+  "prazo_atual": 310,
+  "agrupadores_sem_filhas_representadas": [
+    "T062",
+    "T063",
+    "T064"
+  ],
+  "data": "2026-11-22",
+  "motivo": "Inclusoes aprovadas e orientacoes operacionais de Henrique adotadas por Thales",
+  "base": "R14 com recorte de projeto",
+  "atividades": 243,
+  "agrupadores": 47,
+  "vinculos": 1008,
+  "recursos": 39,
+  "otimizacao_executada": false,
+  "observacao_prazo": "A reducao de 492 para 310 e mudanca de escopo, nao ganho da otimizacao.",
+  "expansao_agrupadores": "Vinculos da nova consultoria expandidos apenas para folhas representadas. Tres agrupadores fechados nao possuem folhas na base e nao criam atividades ou vinculos ficticios."
+}

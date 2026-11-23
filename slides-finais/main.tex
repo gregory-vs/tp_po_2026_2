@@ -1,0 +1,362 @@
+\documentclass{beamer}
+
+% ------------------------------------------------
+% Codificação e idioma
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+
+% ------------------------------------------------
+% TikZ
+% ------------------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+
+% ------------------------------------------------
+% Tema visual e esquema de cores
+% ------------------------------------------------
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Remove os ícones de navegação
+\setbeamertemplate{navigation symbols}{}
+
+% ------------------------------------------------
+% Informações da apresentação
+% ------------------------------------------------
+
+\title[Alocação de tarefas em projetos]{
+O problema da alocação de tarefas em projetos de arquitetura e engenharia
+baseado no problema de alocação de tarefas em projetos de software
+}
+
+\subtitle{
+Modelagem do sequenciamento de atividades com restrições de precedência
+e capacidade de recursos
+}
+
+\author[]{
+\texorpdfstring{
+Caio César Araújo Guimarães - 2023422587 \\
+Guilherme de Paula Oliveira - 2025421294 \\
+Thales Vasconcelos - 2018019630 \\
+Henrique Viana Lima de Oliveira - 2023066543
+}{
+Caio César Araújo Guimarães - 2023422587;
+Guilherme de Paula Oliveira - 2025421294;
+Thales Vasconcelos - 2018019630;
+Henrique Viana Lima de Oliveira - 2023066543
+}
+}
+
+\institute[]{
+Universidade Federal de Minas Gerais (UFMG)
+}
+
+\date{\today}
+
+% ------------------------------------------------
+% Início do documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Slide de título
+% ------------------------------------------------
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ------------------------------------------------
+% Slide de sumário
+% ------------------------------------------------
+\begin{frame}{Sumário}
+    \tableofcontents
+\end{frame}
+
+\section{Contexto e problema}
+
+\begin{frame}{Contexto e problema}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.43\textwidth}
+    \begin{itemize}
+        \item Disciplinas do projeto são interdependentes.
+        \item Atividades possuem duração e precedência.
+        \item Equipes têm capacidade limitada.
+        \item A ordem de execução afeta o prazo total.
+    \end{itemize}
+\end{column}
+
+\begin{column}{0.53\textwidth}
+    \centering
+    \textbf{Fluxo simplificado do projeto}
+
+    \vspace{0.3cm}
+
+    {\tiny
+    \[
+    \text{Arquitetura}
+    \;\rightarrow\;
+    \left\{
+    \begin{array}{l}
+    \text{Estrutura} \\
+    \text{Hidráulica} \\
+    \text{Elétrica} \\
+    \text{Climatização}
+    \end{array}
+    \right.
+    \;\rightarrow\;
+    \text{Compatibilização}
+    \]
+    }
+\end{column}
+
+\end{columns}
+
+\vfill
+
+\begin{block}{Problema}
+    Determinar \textbf{quando cada atividade deve ser executada},
+    respeitando \textbf{precedências} e \textbf{capacidade das equipes},
+    de modo a \textbf{minimizar o prazo total do projeto}.
+\end{block}
+
+\end{frame}
+
+% ------------------------------------------------
+% Modelagem proposta
+% ------------------------------------------------
+\section{Modelagem proposta}
+
+\begin{frame}{Modelagem proposta}
+
+\scriptsize
+
+% ------------------------------------------------
+% Bloco 1 — Variável de decisão
+% ------------------------------------------------
+\begin{block}{1. Variável de decisão}
+
+    Definir o instante de início de cada atividade.
+
+    \vspace{-0.15cm}
+
+    \[
+    x_{a,t} =
+    \begin{cases}
+        1, & \text{se a atividade } a \text{ inicia no período } t, \\
+        0, & \text{caso contrário.}
+    \end{cases}
+    \]
+
+    \vspace{-0.2cm}
+
+\end{block}
+
+\vspace{-0.12cm}
+
+% ------------------------------------------------
+% Bloco 2 — Função objetivo
+% ------------------------------------------------
+\begin{block}{2. Função objetivo}
+
+    Minimizar o prazo total do projeto:
+
+    \vspace{-0.15cm}
+
+    \[
+    \min \; C_{\max}
+    \]
+
+    \vspace{-0.2cm}
+
+    onde \(C_{\max}\) representa o instante de conclusão da última atividade do projeto, medido em dias úteis a partir do início.
+
+\end{block}
+
+\vspace{-0.12cm}
+
+% ------------------------------------------------
+% Bloco 3 — Restrições principais
+% ------------------------------------------------
+\begin{block}{3. Restrições principais}
+
+    \begin{itemize}
+        \setlength{\itemsep}{0.05cm}
+        \item Cada atividade deve iniciar exatamente uma vez.
+        \item As relações de precedência devem ser respeitadas.
+        \item A capacidade das equipes não pode ser excedida.
+    \end{itemize}
+
+\end{block}
+
+\vspace{-0.18cm}
+
+% ------------------------------------------------
+% Resumo visual
+% ------------------------------------------------
+\begin{center}
+    \textbf{
+    Decisão
+    \(\rightarrow\)
+    Restrições
+    \(\rightarrow\)
+    Cronograma ótimo
+    }
+\end{center}
+
+\end{frame}
+
+\section{Instâncias de teste e solução computacional}
+
+\begin{frame}{Instâncias de teste e solução computacional}
+
+\scriptsize
+
+\begin{columns}[T,onlytextwidth]
+
+% ------------------------------------------------
+% Coluna esquerda — Instâncias de teste
+% ------------------------------------------------
+\begin{column}{0.48\textwidth}
+
+    \begin{block}{Instâncias de teste}
+
+        As instâncias serão compostas por:
+
+        \begin{itemize}
+            \setlength{\itemsep}{0.08cm}
+            \item atividades do projeto;
+            \item duração das atividades;
+            \item relações de precedência;
+            \item equipes responsáveis;
+            \item capacidade das equipes;
+            \item cronograma praticado como referência.
+        \end{itemize}
+
+        \begin{center}
+            \textbf{
+            Dados de entrada
+            \(\rightarrow\)
+            Instância do problema
+            }
+        \end{center}
+
+    \end{block}
+
+\end{column}
+
+% ------------------------------------------------
+% Coluna direita — Solução computacional
+% ------------------------------------------------
+\begin{column}{0.48\textwidth}
+
+    \begin{block}{Solução computacional}
+
+        A solução será obtida a partir de:
+
+        \begin{itemize}
+            \setlength{\itemsep}{0.08cm}
+            \item modelo de Programação Linear Inteira;
+            \item implementação em Python com PuLP;
+            \item resolução com o solver CBC;
+            \item método exato baseado em Branch and Cut.
+        \end{itemize}
+
+        \begin{center}
+            \textbf{Python + PuLP + CBC}
+        \end{center}
+
+        \begin{itemize}
+            \setlength{\itemsep}{0.05cm}
+            \item \textbf{PuLP}: modelagem matemática;
+            \item \textbf{CBC}: solver de otimização inteira.
+        \end{itemize}
+
+    \end{block}
+
+\end{column}
+
+\end{columns}
+
+\end{frame}
+
+\section{Avaliação do modelo e resultados esperados}
+
+\begin{frame}{Avaliação do modelo e resultados esperados}
+
+\scriptsize
+
+% ------------------------------------------------
+% Avaliação
+% ------------------------------------------------
+\begin{block}{Avaliação do modelo}
+
+    \begin{itemize}
+        \setlength{\itemsep}{0.12cm}
+        \item Comparação entre o cronograma praticado e o cronograma otimizado.
+        \item Avaliação do impacto das restrições de capacidade das equipes.
+        \item Análise da redução do prazo total do projeto.
+        \item Identificação de possíveis gargalos de recursos.
+    \end{itemize}
+
+\end{block}
+
+\vspace{0.2cm}
+
+% ------------------------------------------------
+% Comparação principal
+% ------------------------------------------------
+\begin{block}{Comparação principal}
+
+    \begin{center}
+
+        \[
+        C_{\max}^{\text{praticado}}
+        \quad \text{vs.} \quad
+        C_{\max}^{\text{otimizado}}
+        \]
+
+    \end{center}
+
+\end{block}
+
+\vspace{0.2cm}
+
+% ------------------------------------------------
+% Objetivo da avaliação
+% ------------------------------------------------
+\begin{block}{Objetivo da avaliação}
+
+    Verificar se o modelo de otimização produz um
+    \textbf{cronograma factível}, respeitando as restrições do problema,
+    com \textbf{menor prazo total de execução}.
+
+\end{block}
+
+\end{frame}
+\section{Encerramento}
+
+\begin{frame}
+
+    \centering
+
+    \vfill
+
+    {\Huge \textbf{Obrigado!}}
+
+    \vspace{1cm}
+
+    {\Large Dúvidas?}
+
+    \vfill
+
+\end{frame}
+
+% ------------------------------------------------
+% Fim do documento
+% ------------------------------------------------
+\end{document}

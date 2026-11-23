@@ -7,3 +7,15 @@ __pycache__/
 
 # arquivos temporarios de solver
 *.zip
+
+# Formatador local autossuficiente para Windows (nao versionar binarios)
+.vscode/tools/
+
+# Documentos do contratante e mapas de anonimização devem ficar fora do repo.
+**/*[rR]14*.pdf*
+**/*[rR]15*.pdf*
+**/*[bB][rR][iI][eE][fF][iI][nN][gG]*.pdf*
+**/mapeamento-ids*
+docs/conferencia-correspondencias.csv
+dados/privado/
+docs/privado/

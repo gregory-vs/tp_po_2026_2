@@ -1,0 +1,38 @@
+{
+  "classificacao": "otimo_comprovado",
+  "motivo_parada": "otimo",
+  "status_problema": "Optimal",
+  "status_solucao": "Optimal Solution Found",
+  "tempo_segundos": 0.036987400002544746,
+  "versao_pulp": "3.3.0",
+  "versao_cbc": "2.10.3",
+  "caminho_log": "C:\\Users\\Thales Vasconcelos\\Documents\\Repos\\tp_po_2026_2\\resultados\\20261123T031257183085Z-b0cc1c21.log",
+  "caminho_registro": "C:\\Users\\Thales Vasconcelos\\Documents\\Repos\\tp_po_2026_2\\resultados\\20261123T031257183085Z-b0cc1c21.json",
+  "objetivo_bruto": 6.0,
+  "prazo": 6,
+  "inicios": {
+    "A": 2,
+    "B": 0,
+    "C": 4
+  },
+  "limite_inferior": 6.0,
+  "gap_relativo": 0.0,
+  "otimo_comprovado": true,
+  "erros": [],
+  "avisos": [],
+  "instancia": "C:\\Users\\Thales Vasconcelos\\Documents\\Repos\\tp_po_2026_2\\dados\\validacao_manual",
+  "horizonte": 10,
+  "referencia_dias": 0,
+  "tolerancia": 1e-06,
+  "solucao_validada": true,
+  "codigo_saida": 0,
+  "versao_python": "3.13.5",
+  "plataforma": "Windows-11-10.0.26200-SP0",
+  "solver": "CBC",
+  "parametros_solver": {
+    "timeLimit": 120,
+    "gapRel": 0,
+    "gapAbs": 0
+  },
+  "formula_gap": "max(0, (prazo-limite_inferior)/max(1, abs(prazo)))"
+}
