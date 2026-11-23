@@ -2,6 +2,12 @@
 
 Data de referência: 23/11/2026. Este arquivo acompanha `docs/roteiro-para-concluir-a-entrega.md`, destinado à leitura humana. As duas versões devem manter os mesmos fatos e pendências. Mostrar a versão humana por padrão.
 
+## 0. Atualização de 23/11/2026 (Henrique) — ler primeiro
+
+Fato verificado: **ótimo da base completa = 187 dias**. `codigo/heuristica.py` (serial SGS com regras de prioridade e amostragem de semente fixa) produziu um cronograma de 187 dias aprovado por `verificar_solucao` (zero erros, H=310); 187 é o limite inferior do caminho crítico sem capacidades (o mesmo LB dos logs do CBC). UB = LB, logo gap zero. Ganho sobre a referência: 123 dias (39,7%). A rodada CBC de 307 dias continua válida como registro do desempenho do solver, não como melhor solução.
+
+Capacidade não ativa no ótimo: +1 em todas as equipes = 187. Cadeia crítica: 21 atividades, majoritariamente ARI (`PROJ-INT`/`ANL-PRODUTO`), terminando em LUM e CTV. 29 atividades com folga zero, 51 com folga ≤ 5 (26 ARI, 15 ARQ). Cenários, marginais e leitura prática: `docs/analise-sensibilidade.md`. Registro: `resultados/sensibilidade-20261123T131548Z.json` (inclui `inicios` do cronograma de 187). Reproduzir: `python codigo/sensibilidade.py` (~10 s, sem CBC). Testes: `codigo/testes/test_heuristica.py` (35 testes no total, todos passando). Onde as seções abaixo dizem "307" ou "187 ≤ z* ≤ 307", ler à luz desta atualização. Nenhuma decisão nova foi registrada em `decisoes-do-trabalho.md`: o uso do resultado no artigo deve ser combinado com o grupo.
+
 ## 1. Mandato e limites de atuação
 
 Thales encerrou sua participação nesta condução e deixou a conclusão para os colegas. Este documento transmite contexto; não é autorização genérica para executar experimentos, mudar escopo ou escrever o artigo inteiro. Confirmar a tarefa atual com o colega responsável e seguir suas instruções. Não iniciar novas buscas do solver só por ler este arquivo.
@@ -17,7 +23,7 @@ Preferências estabelecidas:
 
 ## 2. Objetivo e entrega
 
-Artigo em formato de paper e apresentação de 12 minutos em 25/11/2026. O professor não solicitou ajustes na proposta apresentada.
+Artigo em formato de paper: entrega do PDF no Moodle em 24/11/2026, até 23:59. Apresentação de 12 minutos em 25/11/2026. O professor não solicitou ajustes na proposta apresentada.
 
 Pergunta atual: quanto é possível reduzir o prazo do processo de projeto de arquitetura e engenharia reorganizando os inícios, mantendo atividades, durações, papéis e vínculos da base preparada, sob capacidades fixas?
 

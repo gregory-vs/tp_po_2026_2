@@ -82,3 +82,21 @@ O intervalo conhecido passou a ser 187 ≤ ótimo ≤ 307 dias. O ganho de três
 O CBC mostra `Gap: 0.64`, enquanto a aplicação mostra 39,0879%: os denominadores diferem. Aqui adotamos a fórmula registrada no JSON, (307−187)/307; usando o limite inferior no denominador, (307−187)/187 é aproximadamente 64,17%. Não misturar essas medidas nas tabelas do artigo.
 
 O warm start foi aceito e houve melhoria nesta rodada. Como o tempo solicitado também aumentou de 120 para 1.800 segundos, a comparação com a primeira execução não isola o efeito do warm start. A ultrapassagem do tempo solicitado persistiu. Nenhuma nova rodada foi iniciada pelo agente ao analisar esse resultado.
+
+## 4. Heurística construtiva e análise de sensibilidade — 23/11/2026
+
+Execução realizada por Henrique, sem CBC. Código: `codigo/heuristica.py` e `codigo/sensibilidade.py`. Registro: `../resultados/sensibilidade-20261123T131548Z.json`. Análise completa: [Análise de sensibilidade](analise-sensibilidade.md).
+
+| Indicador | Resultado |
+| --- | --- |
+| Limite inferior (caminho crítico, sem equipes) | 187 dias |
+| Cronograma da heurística (serial SGS) | 187 dias, validado por `verificar_solucao`, zero erros |
+| Classificação | **Ótimo comprovado**: viável e igual ao limite inferior |
+| Redução sobre a referência | 123 dias, 39,7% |
+| Tempo | cerca de 10 s para a base e todos os cenários |
+
+### Interpretação
+
+O intervalo da seção 3 (187 ≤ ótimo ≤ 307) fecha em **187**. O ganho de 3 dias da rodada do CBC era limitação do solver em 36 minutos, não do modelo nem da base. Como o ótimo com equipes coincide com o ótimo sem limite de equipes, a capacidade não está ativa: o prazo é definido pela cadeia de emissões e análises de interiores. Os cenários de equipes e de duração estão na análise de sensibilidade.
+
+A rodada de 307 dias continua válida como registro do desempenho do CBC na formulação indexada no tempo e pode entrar no artigo como comparação entre métodos.

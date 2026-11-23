@@ -1,6 +1,8 @@
 # O que falta para terminar o trabalho
 
-Atualizado em 23/11/2026. **A entrega é na quarta-feira, 25/11, com apresentação de 12 minutos.**
+Atualizado em 23/11/2026. **A entrega do PDF no Moodle é terça-feira, 24/11, até 23:59. A apresentação de 12 minutos é na quarta, 25/11.**
+
+> **Atualização de 23/11 (Henrique):** o prazo ótimo da base completa é **187 dias**, comprovado. Uma heurística clássica de RCPSP encontrou um cronograma de 187 dias, validado pelo verificador do repo, igual ao limite inferior do caminho crítico. O ganho real é **310 → 187 dias (123 dias, 39,7%)**, não 3 dias. O prazo é limitado pela cadeia de emissões e análises de interiores, não pelas equipes. Detalhes, cenários e o que pode ser mudado no processo: [Análise de sensibilidade](analise-sensibilidade.md). Os trechos abaixo que falam em 307 dias descrevem a rodada do CBC, que continua válida como comparação entre métodos.
 
 ## O que já está pronto
 
@@ -14,6 +16,8 @@ Ainda não sabemos se é possível reduzir mais. O programa parou porque chegou 
 
 ## 1. Entender o que mudou no cronograma
 
+**Feito em 23/11:** ver [Análise de sensibilidade](analise-sensibilidade.md), seções 1 e 2 (cadeia crítica, folgas e carga das equipes). O texto abaixo é o pedido original.
+
 Precisamos comparar o cronograma anterior com o de 307 dias. Quais atividades começaram antes? Quais mudaram de posição? Que mudanças ajudam a explicar a redução do prazo?
 
 Não é preciso discutir todas as atividades no artigo. Podemos escolher alguns exemplos claros e montar uma tabela com o prazo anterior, o prazo encontrado e a diferença entre eles. Uma figura de um trecho do cronograma também pode ajudar.
@@ -21,6 +25,8 @@ Não é preciso discutir todas as atividades no artigo. Podemos escolher alguns 
 Os resultados já estão guardados. A explicação e a localização dos arquivos estão em [Registro dos experimentos](experimentos.md).
 
 ## 2. Combinar se vale fazer mais testes
+
+**Feito em 23/11:** cenários de equipes, de duração e de prazo de análise em [Análise de sensibilidade](analise-sensibilidade.md), seções 3 e 4. Para rodar novos cenários: `python codigo/sensibilidade.py` (cerca de 10 s, sem CBC). O texto abaixo é o pedido original.
 
 Já temos um resultado para apresentar. Se houver tempo, podemos deixar o programa procurar por mais tempo ou testar o que acontece quando uma equipe consegue conduzir mais atividades ao mesmo tempo.
 
@@ -48,11 +54,11 @@ Para ajudar na escrita, já temos as [referências comentadas](referencias-comen
 
 ### Cuidados ao explicar o trabalho
 
-- O ganho encontrado foi de **310 para 307 dias**. Os 492 dias mencionados em registros antigos incluíam atividades de obra que saíram do nosso estudo; essa diferença não foi produzida pela otimização.
+- O ganho encontrado pelo CBC foi de **310 para 307 dias**; o ótimo comprovado depois, pela heurística com limite inferior, é **187 dias**. Os 492 dias mencionados em registros antigos incluíam atividades de obra que saíram do nosso estudo; essa diferença não foi produzida pela otimização.
 - A duração de uma atividade já inclui suas pausas. A capacidade da equipe representa quantas atividades ela pode manter abertas ao mesmo tempo.
 - As capacidades foram estimadas pelo que aconteceu no cronograma anterior. Não sabemos se representam o máximo real das equipes.
 - Os dias foram organizados em uma escala comum, sem reconstruir todos os feriados e recessos. Existem também limitações na extração e na preparação dos dados, que precisam ser explicadas.
-- O prazo de 307 dias respeita o modelo, mas ainda não foi comprovado como o melhor possível.
+- O prazo de 307 dias não era o melhor possível; o ótimo de 187 dias foi comprovado em 23/11.
 - Os documentos originais do contratante e os dados que permitam identificar o projeto devem continuar fora do repositório público.
 
 ## 4. Revisar e gerar o PDF do artigo
@@ -67,7 +73,7 @@ Os slides finais estão na pasta `slides-finais`. Eles ainda precisam mostrar o 
 
 Uma divisão possível dos 12 minutos é: problema e objetivo (1,5 min), dados e regras (2 min), modelo e método (3 min), resultados (3,5 min), conclusão e limitações (1 min).
 
-Precisamos dividir as falas, conferir se as figuras estão legíveis e ensaiar com cronômetro. Todos devem conseguir explicar por que comparamos 310 com 307 dias e por que ainda não podemos afirmar que encontramos o melhor prazo possível.
+Precisamos dividir as falas, conferir se as figuras estão legíveis e ensaiar com cronômetro. Todos devem conseguir explicar por que 187 dias é ótimo (cronograma viável igual ao limite inferior), por que o CBC parou em 307 e por que mais equipe não reduz o prazo.
 
 ## 6. Conferir a entrega
 

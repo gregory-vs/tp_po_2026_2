@@ -4,6 +4,8 @@ Trabalho computacional de **Pesquisa Operacional (ELE082)** — UFMG, 2026/2.
 
 **Situação dos dados em 22/11/2026:** usamos o R14 com os ajustes de projeto aprovados: três atividades incluídas, equipes corrigidas e execução de obra retirada. A completa tem 243 atividades, 1008 vínculos, 39 recursos e referência normalizada de 310 dias. A auditoria de entrada passou; a otimização da base completa ainda não foi executada nesta revisão conjunta. A mudança de 492 para 310 dias é de escopo, não ganho do solver. Consulte `dados/ajustes-projeto/registro.json`.
 
+**Resultado em 23/11/2026:** o prazo ótimo da base completa é **187 dias**, contra 310 da referência (123 dias a menos, 39,7%), comprovado por um cronograma viável igual ao limite inferior do caminho crítico. O que limita o prazo é a cadeia de emissões e análises de interiores, não o tamanho das equipes. Ver `docs/analise-sensibilidade.md`.
+
 ---
 
 ## O problema, em um parágrafo
@@ -55,6 +57,14 @@ No PowerShell, também é possível executar diretamente:
 ```powershell
 .\.venv\Scripts\python.exe codigo/main.py
 ```
+
+### Heurística e análise de sensibilidade (sem CBC, cerca de 10 s)
+
+```bash
+python codigo/sensibilidade.py
+```
+
+Calcula o limite inferior, monta o cronograma pela heurística (`codigo/heuristica.py`), valida, roda os cenários de equipes e de duração e grava `resultados/sensibilidade-<data>.json`. Os testes ficam em `python -m unittest codigo.testes.test_heuristica`.
 
 A auditoria de entrada usa somente a biblioteca padrão. A entrada antiga e o gerador de recortes foram removidos.
 
