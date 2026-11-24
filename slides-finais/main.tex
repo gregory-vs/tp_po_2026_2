@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 % ------------------------------------------------
 % Codificação e idioma
@@ -6,357 +6,525 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazil]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
 
 % ------------------------------------------------
 % TikZ
 % ------------------------------------------------
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
 
 % ------------------------------------------------
 % Tema visual e esquema de cores
 % ------------------------------------------------
 \usetheme{Madrid}
 \usecolortheme{seahorse}
-
-% Remove os ícones de navegação
 \setbeamertemplate{navigation symbols}{}
+
+% Ajuste sutil para espaçamento limpo em 16:9
+\setbeamersize{text margin left=0.6cm, text margin right=0.6cm}
 
 % ------------------------------------------------
 % Informações da apresentação
 % ------------------------------------------------
-
-\title[Alocação de tarefas em projetos]{
-O problema da alocação de tarefas em projetos de arquitetura e engenharia
-baseado no problema de alocação de tarefas em projetos de software
+\title[Otimização de Cronogramas de Projeto]{
+Otimização do Cronograma de Projetos de Arquitetura e Engenharia
 }
 
 \subtitle{
-Modelagem do sequenciamento de atividades com restrições de precedência
-e capacidade de recursos
+Modelagem RCPSP, Resolução Exata e Heurística, e Análise de Sensibilidade em um Empreendimento Real
 }
 
-\author[]{
+\author[Grupo 2 (UFMG)]{
 \texorpdfstring{
-Caio César Araújo Guimarães - 2023422587 \\
-Guilherme de Paula Oliveira - 2025421294 \\
-Thales Vasconcelos - 2018019630 \\
-Henrique Viana Lima de Oliveira - 2023066543
+Caio César Araújo Guimarães -- 2023422587 \\
+Guilherme de Paula Oliveira -- 2025421294 \\
+Thales Vasconcelos -- 2018019630 \\
+Henrique Viana Lima de Oliveira -- 2023066543
 }{
-Caio César Araújo Guimarães - 2023422587;
-Guilherme de Paula Oliveira - 2025421294;
-Thales Vasconcelos - 2018019630;
-Henrique Viana Lima de Oliveira - 2023066543
+Caio César Araújo Guimarães; Guilherme de Paula Oliveira; Thales Vasconcelos; Henrique Viana Lima de Oliveira
 }
 }
 
-\institute[]{
-Universidade Federal de Minas Gerais (UFMG)
+\institute[UFMG]{
+Universidade Federal de Minas Gerais (UFMG) \\
+Pesquisa Operacional
 }
 
-\date{\today}
+\date{25 de novembro de 2026}
 
-% ------------------------------------------------
-% Início do documento
-% ------------------------------------------------
 \begin{document}
 
-% ------------------------------------------------
-% Slide de título
-% ------------------------------------------------
-\begin{frame}
+% ================================================
+% CAPA
+% ================================================
+\begin{frame}[plain]
     \titlepage
 \end{frame}
 
-% ------------------------------------------------
-% Slide de sumário
-% ------------------------------------------------
-\begin{frame}{Sumário}
-    \tableofcontents
-\end{frame}
+% ================================================
+% SLIDE 1 --- CONTEXTO E PERGUNTA DE PESQUISA
+% ================================================
+\section{Contextualização}
 
-\section{Contexto e problema}
-
-\begin{frame}{Contexto e problema}
+\begin{frame}{Contexto, dores do cliente e pergunta de pesquisa}
 
 \begin{columns}[T,onlytextwidth]
 
-\begin{column}{0.43\textwidth}
-    \begin{itemize}
-        \item Disciplinas do projeto são interdependentes.
-        \item Atividades possuem duração e precedência.
-        \item Equipes têm capacidade limitada.
-        \item A ordem de execução afeta o prazo total.
-    \end{itemize}
+\begin{column}{0.52\textwidth}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.08cm}
+    \item \textbf{Estudo de caso real:} coordenação do cronograma de \textbf{projeto} (não de obra) de um empreendimento residencial de grande porte (\textbf{3 torres + embasamento}).
+    \item Envolve dezenas de equipes interdependentes: projetistas, análises do cliente, consultorias e aprovações.
+    \item A \textbf{Arquitetura (ARQ)} conduz o ciclo: emite a base, as disciplinas desenvolvem sobre ela, o cliente analisa/compatibiliza e inicia-se nova revisão (R00 $\rightarrow$ R01 $\rightarrow$ R02).
+    \item \textbf{A dor prática:} cronogramas montados manualmente em fila criam \textbf{esperas ocultas}, alongando o prazo de liberação para a obra.
+    \item Estrutura clássica de \textbf{RCPSP} (\emph{Resource-Constrained Project Scheduling Problem}).
+\end{itemize}
 \end{column}
 
-\begin{column}{0.53\textwidth}
+\begin{column}{0.46\textwidth}
     \centering
-    \textbf{Fluxo simplificado do projeto}
+    \footnotesize\textbf{Fluxo simplificado de dependências}
 
-    \vspace{0.3cm}
+    \vspace{0.25cm}
+    \resizebox{\linewidth}{!}{%
+    \begin{tikzpicture}[
+        node distance=0.22cm and 0.55cm,
+        box/.style={rectangle, draw=blue!55!black, fill=blue!7, rounded corners=2pt,
+                    font=\scriptsize, align=center, minimum width=1.65cm, minimum height=0.45cm},
+        cli/.style={rectangle, draw=orange!75!black, fill=orange!15, rounded corners=2pt,
+                    font=\scriptsize, align=center, minimum width=1.45cm, minimum height=0.58cm},
+        fin/.style={rectangle, draw=green!50!black, fill=green!12, rounded corners=2pt,
+                    font=\scriptsize, align=center, minimum width=1.55cm, minimum height=0.58cm},
+        arr/.style={-{Stealth[length=4pt]}, thick, draw=black!65}
+    ]
+        \node[box] (arq) {Arquitetura\\(ARQ)};
+        \node[box, right=0.55cm of arq, yshift=0.95cm] (est) {Estrutura / Fund.};
+        \node[box, below=0.14cm of est] (inst) {Instalações / PCI};
+        \node[box, below=0.14cm of inst] (cxo) {Caixilhos (CXO)};
+        \node[box, below=0.14cm of cxo] (ari) {Interiores (ARI)};
 
-    {\tiny
-    \[
-    \text{Arquitetura}
-    \;\rightarrow\;
-    \left\{
-    \begin{array}{l}
-    \text{Estrutura} \\
-    \text{Hidráulica} \\
-    \text{Elétrica} \\
-    \text{Climatização}
-    \end{array}
-    \right.
-    \;\rightarrow\;
-    \text{Compatibilização}
-    \]
+        \node[cli, right=0.55cm of inst, yshift=-0.28cm] (anl) {Análise\\Cliente};
+        \node[fin, right=0.45cm of anl] (comp) {Compatib.\\e Aprov.};
+
+        \foreach \n in {est, inst, cxo, ari} {
+            \draw[arr] (arq.east) -- (\n.west);
+            \draw[arr] (\n.east) -- (anl.west);
+        }
+        \draw[arr] (anl.east) -- (comp.west);
+    \end{tikzpicture}%
     }
+
+    \vspace{0.25cm}
+    \scriptsize\emph{Cada disciplina alterna emissões do projetista e análises do cliente até o fechamento da etapa.}
 \end{column}
 
 \end{columns}
 
-\vfill
+\vspace{0.1cm}
 
-\begin{block}{Problema}
-    Determinar \textbf{quando cada atividade deve ser executada},
-    respeitando \textbf{precedências} e \textbf{capacidade das equipes},
-    de modo a \textbf{minimizar o prazo total do projeto}.
+\begin{block}{Pergunta de pesquisa}
+\scriptsize
+Quanto é possível reduzir o prazo total do processo de projeto \textbf{apenas reorganizando os dias de início}, mantendo fixas as atividades, durações declaradas, equipes responsáveis e vínculos da base real?
 \end{block}
 
 \end{frame}
 
-% ------------------------------------------------
-% Modelagem proposta
-% ------------------------------------------------
-\section{Modelagem proposta}
+% ================================================
+% SLIDE 2 --- INSTÂNCIA REAL (BASE R14) E HIPÓTESES
+% ================================================
+\section{Instância real e hipóteses}
 
-\begin{frame}{Modelagem proposta}
+\begin{frame}{Instância real anonimizada (base R14) e hipóteses}
 
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.49\textwidth}
+\begin{block}{O que é o R14 e o cenário atual}
 \scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.04cm}
+    \item \textbf{Revisão R14:} 14ª revisão oficial do cronograma real do empreendimento (anonimizada).
+    \item \textbf{243 atividades reais} (47 agrupadores fora do modelo).
+    \item \textbf{1.008 vínculos:} 1.003 TI, 2 II, 2 TT e 1 IT.
+    \item \textbf{39 equipes/papéis} (projetistas, cliente e consultorias).
+    \item \textbf{Prazo praticado: 310 dias úteis} (escala $0 \dots 309$).
+    \item \textbf{Recorte:} obra removida ($492 \rightarrow 310$ d é escopo, não ganho).
+\end{itemize}
+\end{block}
+\end{column}
 
-% ------------------------------------------------
-% Bloco 1 — Variável de decisão
-% ------------------------------------------------
-\begin{block}{1. Variável de decisão}
+\begin{column}{0.49\textwidth}
+\begin{block}{Hipóteses de modelagem}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.04cm}
+    \item \textbf{Duração ($d_a$):} intervalo início--entrega em dias úteis; \textbf{já inclui pausas internas} (não mede horas de esforço).
+    \item \textbf{Capacidade ($R_k$):} máximo de atividades simultâneas, estimado pelo \textbf{pico observado} (ex.: ARQ = 6; Produto = 7).
+    \item \textbf{TI com lag 0:} sucessora pode iniciar no dia da entrega; se compartilharem equipe, ambas contam no dia.
+    \item \textbf{Calendário comum:} dias úteis consecutivos, sem feriados; replanejamento desde o dia 0.
+\end{itemize}
+\end{block}
+\end{column}
 
-    Definir o instante de início de cada atividade.
+\end{columns}
 
-    \vspace{-0.15cm}
+\vspace{0.08cm}
 
-    \[
-    x_{a,t} =
-    \begin{cases}
-        1, & \text{se a atividade } a \text{ inicia no período } t, \\
-        0, & \text{caso contrário.}
-    \end{cases}
-    \]
+\begin{alertblock}{Descoberta no R14: duas versões da base}
+\scriptsize
+\textbf{27 atividades sem predecessora} começaram tarde (dias 41--220) por dependerem do \textbf{Estudo Preliminar de ARQ} (recolhido no PDF). Analisamos: \textbf{(1) com liberações} (presas às datas praticadas $\rightarrow$ realista) e \textbf{(2) largadas livres} (dia 0 $\rightarrow$ limite teórico).
+\end{alertblock}
 
-    \vspace{-0.2cm}
+\end{frame}
 
+% ================================================
+% SLIDE 3 --- MODELO MATEMÁTICO COMPLETO
+% ================================================
+\section{Modelo matemático}
+
+\begin{frame}{Modelo de Programação Linear Inteira Mista (indexado no tempo)}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.46\textwidth}
+\begin{block}{Variáveis e expressões derivadas}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.08cm}
+    \item $x_{a\tau} \in \{0,1\}$: vale $1$ se a atividade $a \in A$ inicia no dia $\tau \in T_a = \{0, \ldots, H - \max(d_a,1)\}$.
+    \item $C_{\max} \ge 0$: prazo total do projeto (\emph{makespan}).
+    \item \textbf{Início e entrega inclusiva} (expressões lineares):
+\end{itemize}
+\vspace{-0.2cm}
+\[
+S_a = \sum_{\tau \in T_a} \tau x_{a\tau}, \qquad
+F_a = S_a + \max(d_a,1) - 1
+\]
 \end{block}
 
-\vspace{-0.12cm}
+\vspace{0.08cm}
 
-% ------------------------------------------------
-% Bloco 2 — Função objetivo
-% ------------------------------------------------
-\begin{block}{2. Função objetivo}
+\begin{block}{Porte do modelo na base completa ($H = 310$)}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.06cm}
+    \item \textbf{72.381 variáveis binárias} + 1 contínua ($C_{\max}$).
+    \item \textbf{13.584 restrições:} 243 início único, 1.008 precedências, 12.090 capacidade ($39 \times 310$) e 243 prazo.
+    \item \textbf{1.696.037} coeficientes não nulos.
+\end{itemize}
+\end{block}
+\end{column}
 
-    Minimizar o prazo total do projeto:
+\begin{column}{0.52\textwidth}
+\begin{block}{Função objetivo e famílias de restrições}
+\scriptsize
+\vspace{-0.2cm}
+\begin{align*}
+\min\quad & C_{\max} \\
+\text{s.a.}\quad
+& \sum_{\tau \in T_a} x_{a\tau} = 1, && \forall a \in A \;\; \text{(início único)} \\
+& S_j \ge F_i + \ell_e \;\; (\text{TI}), && S_j \ge S_i + \ell_e \;\; (\text{II}) \\
+& F_j \ge F_i + \ell_e \;\; (\text{TT}), && F_j \ge S_i + \ell_e \;\; (\text{IT}) \\
+& \sum_{a \in A^+} q_{ak} \sum_{\substack{\tau \in T_a \\ t-d_a+1 \le \tau \le t}} x_{a\tau} \le R_k, && \forall k \in K,\; t \in T \\
+& C_{\max} \ge F_a + 1, && \forall a \in A \;\; \text{(makespan)} \\
+& S_a \ge r_a, && \forall a \in A^L \;\; \text{(liberações)}
+\end{align*}
+\end{block}
+\end{column}
 
-    \vspace{-0.15cm}
+\end{columns}
 
-    \[
-    \min \; C_{\max}
-    \]
+\end{frame}
 
-    \vspace{-0.2cm}
+% ================================================
+% SLIDE 4 --- PIPELINE REVISADA E MÉTODOS
+% ================================================
+\section{Abordagem e pipeline}
 
-    onde \(C_{\max}\) representa o instante de conclusão da última atividade do projeto, medido em dias úteis a partir do início.
+\begin{frame}{Pipeline de solução e complementaridade dos métodos}
 
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=0.35cm,
+    stepbox/.style={rectangle, draw=blue!55!black, fill=blue!7, rounded corners=3pt,
+                    font=\scriptsize, align=center, text width=2.25cm, minimum height=1.15cm},
+    methbox/.style={rectangle, draw=orange!75!black, fill=orange!12, rounded corners=3pt,
+                    font=\scriptsize, align=center, text width=2.55cm, minimum height=1.15cm},
+    valbox/.style={rectangle, draw=green!50!black, fill=green!10, rounded corners=3pt,
+                   font=\scriptsize, align=center, text width=2.25cm, minimum height=1.15cm},
+    arr/.style={-{Stealth[length=5pt]}, thick, draw=black!70}
+]
+    \node[stepbox] (s1) {\textbf{1. Auditoria}\\Integridade, ciclos e referência viável};
+    \node[stepbox, right=0.38cm of s1] (s2) {\textbf{2. Limite Inferior}\\CPM sem equipes gera $LB$ exato};
+    \node[methbox, right=0.38cm of s2] (s3) {\textbf{3. Dois Métodos}\\(a) PLIM no CBC\\(b) Serial SGS};
+    \node[valbox, right=0.38cm of s3] (s4) {\textbf{4. Validação}\\Confere vínculos, equipes e $UB = LB$};
+    \node[stepbox, right=0.38cm of s4] (s5) {\textbf{5. Sensibilidade}\\Reotimiza equipes, durações e zonas};
+
+    \draw[arr] (s1) -- (s2);
+    \draw[arr] (s2) -- (s3);
+    \draw[arr] (s3) -- (s4);
+    \draw[arr] (s4) -- (s5);
+\end{tikzpicture}%
+}
+
+\vspace{0.3cm}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.48\textwidth}
+\begin{block}{Método (a): Exato --- PLIM (PuLP + CBC)}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.10cm}
+    \item Resolve a formulação indexada no tempo via \textbf{Branch-and-Cut}.
+    \item Recebe o cronograma praticado (310 d) como \textbf{\emph{warm start}} (ponto de partida viável).
+    \item \textbf{Força:} prova o ótimo mesmo quando a \textbf{capacidade das equipes trava o prazo} (como na instância pequena).
+    \item \textbf{Limite:} com 72.381 binárias, o nó raiz consome o tempo e o solver não fecha o gap na base completa.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{block}{Método (b): Construtivo --- CPM + Serial SGS}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.10cm}
+    \item \textbf{Serial SGS} (clássico do RCPSP): aloca atividades uma a uma no primeiro dia viável (vínculos + equipes), usando regras do CPM (LST, folga, EST, duração) + 30 amostras perturbadas.
+    \item \textbf{Prova matemática de otimalidade:} o CPM sem equipes dá um limite inferior ($LB$). Se o cronograma viável do SGS atinge $UB = LB$, então \textbf{gap = 0\% (ótimo global comprovado)}.
+    \item Todo cronograma só é aceito após passar pelo \textbf{verificador independente}.
+\end{itemize}
+\end{block}
+\end{column}
+
+\end{columns}
+
+\end{frame}
+
+% ================================================
+% SLIDE 5 --- RESULTADOS PRINCIPAIS (PRAZOS E MÉTODOS)
+% ================================================
+\section{Resultados}
+
+\begin{frame}{Resultados principais: redução de prazo e métodos}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.56\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/01-prazos.png}
+\end{column}
+
+\begin{column}{0.42\textwidth}
+\scriptsize
+\begin{block}{Comparação entre métodos}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llrrrl}
+\toprule
+Instância & Método & UB & LB & Tempo & Situação \\
+\midrule
+Pequena  & CBC        & 45  & 45  & 1,4 s   & ótimo \\
+(12 atv.) & CPM + SGS  & 45  & 44  & $<$0,1 s & viável \\
+\midrule
+Completa & Praticado  & 310 & --  & --      & ref. \\
+(243 atv.) & CBC (WS)   & 307 & 187 & 36 min  & gap 39\% \\
+         & SGS (lib.) & \textbf{285} & \textbf{285} & 0,04 s  & \textbf{ótimo} \\
+         & SGS (livre)& \textbf{187} & \textbf{187} & 0,25 s  & \textbf{ótimo} \\
+\bottomrule
+\end{tabular}
+}
 \end{block}
 
-\vspace{-0.12cm}
+\vspace{0.08cm}
 
-% ------------------------------------------------
-% Bloco 3 — Restrições principais
-% ------------------------------------------------
-\begin{block}{3. Restrições principais}
+\begin{itemize}
+    \setlength{\itemsep}{0.08cm}
+    \item \textbf{Ganho realista:} \textbf{310 $\rightarrow$ 285 dias} (\textbf{$-$25 dias / $-$8,1\%}), ótimo comprovado apenas reordenando inícios.
+    \item \textbf{Diferença 285 vs. 187 (98 dias):} mede o peso da espera pelo Estudo Preliminar de ARQ.
+    \item \textbf{Complementaridade:} CBC prova na pequena (capacidade ativa); CPM + SGS prova na completa em $<$1 s.
+\end{itemize}
+\end{column}
 
+\end{columns}
+
+\end{frame}
+
+% ================================================
+% SLIDE 6 --- O QUE LIMITA O PRAZO (EQUIPES x CADEIA CRÍTICA)
+% ================================================
+\begin{frame}{O que limita o prazo: cadeia crítica, não tamanho das equipes}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.44\textwidth}
+    \centering
+    \footnotesize\textbf{Efeito de variar a capacidade das equipes}
+    \vspace{0.15cm}
+
+    \includegraphics[width=\textwidth]{figuras/05-equipes.png}
+
+    \vspace{0.12cm}
+    \scriptsize
+    \begin{block}{Achado contraintuitivo}
+    A restrição de capacidade \textbf{não está ativa no ótimo} (preço-sombra zero). Aumentar ou reduzir 1 frente em todas as equipes mantém o prazo em \textbf{285 dias}. \textbf{Contratar mais gente não reduz o prazo.}
+    \end{block}
+\end{column}
+
+\begin{column}{0.54\textwidth}
+    \centering
+    \footnotesize\textbf{Cadeia crítica realista (14 atividades, 285 dias)}
+    \vspace{0.15cm}
+
+    \includegraphics[width=\textwidth]{figuras/04-cadeia-285.png}
+
+    \vspace{0.12cm}
+    \scriptsize
     \begin{itemize}
-        \setlength{\itemsep}{0.05cm}
-        \item Cada atividade deve iniciar exatamente uma vez.
-        \item As relações de precedência devem ser respeitadas.
-        \item A capacidade das equipes não pode ser excedida.
+        \setlength{\itemsep}{0.06cm}
+        \item O prazo realista é ditado integralmente pelo ciclo de AP de \textbf{Arquitetura e Caixilhos}: Mapas de esquadrias (52 d) $\rightarrow$ Caixilhos (30 d) $\rightarrow$ AP ARQ das 4 zonas em sequência (75 d).
+        \item Trabalhar com 1 frente por equipe (sem paralelismo) levaria o projeto a $\approx$614 dias; as frentes atuais já bastam.
     \end{itemize}
+\end{column}
 
+\end{columns}
+
+\end{frame}
+
+% ================================================
+% SLIDE 7 --- ANÁLISE DE SENSIBILIDADE E PROPOSTAS
+% ================================================
+\begin{frame}{Análise de sensibilidade: onde agir para ganhar mais prazo}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.51\textwidth}
+    \centering
+    \footnotesize\textbf{Redução sobre a base realista (285 dias)}
+    \vspace{0.1cm}
+    \includegraphics[width=\textwidth]{figuras/02-sensibilidade-285.png}
+\end{column}
+
+\begin{column}{0.47\textwidth}
+    \centering
+    \footnotesize\textbf{Emissão do projetista $\times$ Análise do cliente}
+    \vspace{0.1cm}
+    \includegraphics[width=\textwidth]{figuras/03-emissao-x-analise.png}
+\end{column}
+
+\end{columns}
+
+\vspace{0.18cm}
+
+\begin{block}{Alavancas gerenciais indicadas pelos dados}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.06cm}
+    \item \textbf{A alavanca é a emissão do projetista, não a análise do cliente:} emitir \textbf{10\%} mais rápido ganha \textbf{$-$15 dias}; cortar a análise do cliente pela metade (\textbf{50\%}) ganha apenas \textbf{$-$2 dias} (SLA de 5 dias ganha 0).
+    \item \textbf{Agir só na cadeia crítica:} acelerar ARQ em 20\% vale \textbf{$-$10 dias} e Caixilhos vale \textbf{$-$6 dias}; acelerar Interiores em 20\% vale \textbf{0 dia}. Padronização e automação BIM (ex.: mapa de esquadrias) devem mirar a cadeia crítica.
+    \item \textbf{Paralelizar zonas do AP final de ARQ:} tratar as 4 zonas em paralelo (quando não há dependência técnica) reduz \textbf{$-$10 dias}.
+\end{itemize}
 \end{block}
 
-\vspace{-0.18cm}
+\end{frame}
 
-% ------------------------------------------------
-% Resumo visual
-% ------------------------------------------------
+% ================================================
+% SLIDE 8 --- LIMITAÇÕES E TRABALHOS FUTUROS
+% ================================================
+\section{Limitações e conclusões}
+
+\begin{frame}{Limitações do estudo e trabalhos futuros}
+
+\begin{columns}[T,onlytextwidth]
+
+\begin{column}{0.49\textwidth}
+\begin{block}{Limitações (transparência metodológica)}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.10cm}
+    \item \textbf{Cobertura da base R14:} o bloco do Estudo Preliminar estava recolhido no PDF (substituído de forma conservadora pelas datas de liberação); 59 vínculos foram descartados na preparação original (22 ciclos, 37 incoerências).
+    \item \textbf{Vínculo ausente na compatibilização:} restaurado em teste, muda o limite livre de 187 para 196 dias e \textbf{não altera o ótimo realista de 285 dias}.
+    \item \textbf{Capacidades estimadas} pelo pico observado no praticado (porém a conclusão é robusta: $\pm 1$ frente não muda os 285 dias).
+    \item \textbf{Durações fixas e calendário abstrato:} sem incerteza, sem feriados por equipe; replanejamento parte do dia 0.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.49\textwidth}
+\begin{block}{Trabalhos futuros e implicações práticas}
+\scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.10cm}
+    \item \textbf{Incluir o Estudo Preliminar na base:} permite medir o ganho de liberar a base de ARQ em pacotes por torre (atacando a diferença entre 285 e 187 dias).
+    \item \textbf{Modelar revisões como decisão:} tratar a redução de ciclos (R00/R01/R02) via briefing mais fechado e alinhamento prévio.
+    \item \textbf{Calendários e incerteza:} incorporar calendários específicos por equipe e otimização robusta para variabilidade de durações.
+    \item \textbf{Hibridização (SGS $\rightarrow$ CBC):} usar o cronograma heurístico como \emph{warm start} do solver em instâncias onde a capacidade esteja ativa.
+\end{itemize}
+\end{block}
+\end{column}
+
+\end{columns}
+
+\end{frame}
+
+% ================================================
+% SLIDE 9 --- CONCLUSÕES
+% ================================================
+\begin{frame}{Conclusões}
+
+\begin{block}{Principais respostas do estudo}
+\footnotesize
+\begin{itemize}
+    \setlength{\itemsep}{0.18cm}
+    \item \textbf{Ganho real apenas por reordenação:} mantendo as mesmas atividades, durações, vínculos e equipes, o prazo cai de \textbf{310 para 285 dias úteis ($-$25 dias / $-$8,1\%)} com ótimo global comprovado respeitando as liberações reais --- e até \textbf{187 dias ($-$39,7\%)} no limite sem espera pelo Estudo Preliminar.
+    \item \textbf{Diagnóstico gerencial claro:} o gargalo do empreendimento está na \textbf{cadeia crítica de precedências e emissões} (Arquitetura e Caixilhos), e \textbf{não na capacidade das equipes}. Contratar mais frentes não reduz o prazo; padronização BIM focada na cadeia crítica e paralelismo de zonas geram de 10 a 21 dias adicionais.
+    \item \textbf{Complementaridade de métodos em PO:} a PLIM indexada no tempo (CBC) prova o ótimo quando a capacidade restringe o prazo (instância pequena), enquanto a combinação \textbf{CPM + Serial SGS} resolve a base completa em menos de 1 segundo com prova de otimalidade ($UB = LB$) e validação independente.
+\end{itemize}
+\end{block}
+
+\vfill
+
 \begin{center}
-    \textbf{
-    Decisão
-    \(\rightarrow\)
-    Restrições
-    \(\rightarrow\)
-    Cronograma ótimo
-    }
+    \small\textbf{Mensagem final:} otimizar cronogramas de projeto não exige mais pessoas --- exige enxergar onde estão as folgas e atacar a cadeia que realmente comanda o prazo.
 \end{center}
 
 \end{frame}
 
-\section{Instâncias de teste e solução computacional}
+% ================================================
+% SLIDE 10 --- REFERÊNCIAS BIBLIOGRÁFICAS
+% ================================================
+\section{Referências}
 
-\begin{frame}{Instâncias de teste e solução computacional}
-
-\scriptsize
-
-\begin{columns}[T,onlytextwidth]
-
-% ------------------------------------------------
-% Coluna esquerda — Instâncias de teste
-% ------------------------------------------------
-\begin{column}{0.48\textwidth}
-
-    \begin{block}{Instâncias de teste}
-
-        As instâncias serão compostas por:
-
-        \begin{itemize}
-            \setlength{\itemsep}{0.08cm}
-            \item atividades do projeto;
-            \item duração das atividades;
-            \item relações de precedência;
-            \item equipes responsáveis;
-            \item capacidade das equipes;
-            \item cronograma praticado como referência.
-        \end{itemize}
-
-        \begin{center}
-            \textbf{
-            Dados de entrada
-            \(\rightarrow\)
-            Instância do problema
-            }
-        \end{center}
-
-    \end{block}
-
-\end{column}
-
-% ------------------------------------------------
-% Coluna direita — Solução computacional
-% ------------------------------------------------
-\begin{column}{0.48\textwidth}
-
-    \begin{block}{Solução computacional}
-
-        A solução será obtida a partir de:
-
-        \begin{itemize}
-            \setlength{\itemsep}{0.08cm}
-            \item modelo de Programação Linear Inteira;
-            \item implementação em Python com PuLP;
-            \item resolução com o solver CBC;
-            \item método exato baseado em Branch and Cut.
-        \end{itemize}
-
-        \begin{center}
-            \textbf{Python + PuLP + CBC}
-        \end{center}
-
-        \begin{itemize}
-            \setlength{\itemsep}{0.05cm}
-            \item \textbf{PuLP}: modelagem matemática;
-            \item \textbf{CBC}: solver de otimização inteira.
-        \end{itemize}
-
-    \end{block}
-
-\end{column}
-
-\end{columns}
-
-\end{frame}
-
-\section{Avaliação do modelo e resultados esperados}
-
-\begin{frame}{Avaliação do modelo e resultados esperados}
+\begin{frame}{Referências bibliográficas}
 
 \scriptsize
+\begin{itemize}
+    \setlength{\itemsep}{0.15cm}
+    \item \textbf{Ding, H., Zhuang, C., \& Liu, J. (2023).} \emph{Extensions of the resource-constrained project scheduling problem.} Automation in Construction, 153, 104958.
+    \\ \textcolor{black!70}{Base conceitual do RCPSP, classificação das extensões e justificativa conjunta de precedências e recursos.}
 
-% ------------------------------------------------
-% Avaliação
-% ------------------------------------------------
-\begin{block}{Avaliação do modelo}
+    \item \textbf{Kong, F., \& Dou, D. (2020).} \emph{RCPSP with Combined Precedence Relations and Resource Calendars.} Journal of Construction Engineering and Management, 146(12).
+    \\ \textcolor{black!70}{Fundamentação dos quatro tipos de precedência (TI, II, TT, IT) em projetos de construção civil.}
 
-    \begin{itemize}
-        \setlength{\itemsep}{0.12cm}
-        \item Comparação entre o cronograma praticado e o cronograma otimizado.
-        \item Avaliação do impacto das restrições de capacidade das equipes.
-        \item Análise da redução do prazo total do projeto.
-        \item Identificação de possíveis gargalos de recursos.
-    \end{itemize}
+    \item \textbf{Colares, F. S. (2010).} \emph{Alocação de Equipes e Desenvolvimento de Cronogramas em Projetos de Software Utilizando Otimização.} Dissertação de Mestrado, UFMG.
+    \\ \textcolor{black!70}{Ponte entre sequenciamento em projetos de software e engenharia, e análise de recursos versus prazo.}
 
-\end{block}
+    \item \textbf{Pass-Lanneau, A., Bendotti, P., \& Brunod-Indrigo, P. (2024).} \emph{Exact and heuristic methods for Anchor-Robust and Adjustable-Robust RCPSP.} Annals of Operations Research, 337, 649--682.
+    \\ \textcolor{black!70}{Referência para rigor na avaliação computacional ($LB$, $UB$, gap) e discussão de durações fixas vs. incerteza.}
 
-\vspace{0.2cm}
+    \item \textbf{Procopio, R. et al. (2025).} \emph{Alocação ótima de tarefas em equipes Scrum usando Programação Linear Inteira.} ENMC/ECTM.
+    \\ \textcolor{black!70}{Referência de estruturação e exposição de modelos de Programação Linear Inteira aplicados a equipes.}
+\end{itemize}
 
-% ------------------------------------------------
-% Comparação principal
-% ------------------------------------------------
-\begin{block}{Comparação principal}
-
-    \begin{center}
-
-        \[
-        C_{\max}^{\text{praticado}}
-        \quad \text{vs.} \quad
-        C_{\max}^{\text{otimizado}}
-        \]
-
-    \end{center}
-
-\end{block}
-
-\vspace{0.2cm}
-
-% ------------------------------------------------
-% Objetivo da avaliação
-% ------------------------------------------------
-\begin{block}{Objetivo da avaliação}
-
-    Verificar se o modelo de otimização produz um
-    \textbf{cronograma factível}, respeitando as restrições do problema,
-    com \textbf{menor prazo total de execução}.
-
-\end{block}
-
-\end{frame}
-\section{Encerramento}
-
-\begin{frame}
-
-    \centering
-
-    \vfill
-
-    {\Huge \textbf{Obrigado!}}
-
-    \vspace{1cm}
-
-    {\Large Dúvidas?}
-
-    \vfill
+\vfill
+\begin{center}
+    \normalsize\textbf{Obrigado! Dúvidas?}
+\end{center}
 
 \end{frame}
 
-% ------------------------------------------------
-% Fim do documento
-% ------------------------------------------------
 \end{document}
