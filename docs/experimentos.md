@@ -93,7 +93,7 @@ Execução realizada por Henrique, sem CBC. Código: `codigo/heuristica.py` e `c
 | Cronograma da heurística (serial SGS) | 187 dias, validado por `verificar_solucao`, zero erros |
 | Classificação | **Ótimo comprovado**: viável e igual ao limite inferior |
 | Redução sobre a referência | 123 dias, 39,7% |
-| Tempo | cerca de 10 s para a base e todos os cenários |
+| Tempo | cerca de 40 s para a base e todos os cenários |
 
 ### Interpretação
 

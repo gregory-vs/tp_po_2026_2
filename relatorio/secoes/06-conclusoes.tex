@@ -3,9 +3,39 @@
 \section{Conclusões}
 \label{sec:conclusoes}
 
-\preencher{Retomar o objetivo e responder à pergunta de pesquisa com base
-nos resultados apresentados. Sintetizar a contribuição e suas implicações
-práticas, sem introduzir novos resultados.}
+O estudo modelou o cronograma de projeto de um empreendimento de grande
+porte como um RCPSP e mediu quanto o prazo pode cair apenas com a escolha
+dos dias de início, mantendo as mesmas atividades, durações, vínculos e
+equipes. Respeitando as datas em que as disciplinas foram liberadas no
+cronograma praticado, o prazo ótimo é de 285 dias, contra 310 do
+praticado: uma redução de 25 dias (8,1\%). Se todas as disciplinas
+pudessem começar desde o início, o ótimo seria de 187 dias, 123 a menos.
+A diferença entre os dois valores é a espera das disciplinas pela base de
+arquitetura, que, na realidade, conduz o processo de projeto.
 
-\preencher{Registrar as principais limitações e indicar trabalhos futuros
-coerentes com os achados do estudo.}
+Nos dois casos, o prazo é definido pela sequência de emissões e análises,
+e não pela capacidade das equipes: uma frente a mais em todas as equipes
+não muda o prazo. A alavanca é o tempo de emissão do projetista nas
+atividades da cadeia crítica, que na versão realista é a do anteprojeto de
+arquitetura e caixilhos. Emitir 10\% mais rápido reduz 15 dias, enquanto
+reduzir à metade o tempo de análise do cliente reduz 2. Uma redução fora
+da cadeia crítica não altera o prazo. Daí a principal implicação prática:
+padronização e automação dão resultado quando são dirigidas às atividades
+que a análise de folgas aponta, e não quando são aplicadas de forma geral.
+
+Do ponto de vista do método, a formulação indexada no tempo forneceu um
+limite inferior justo já na relaxação linear, mas o solver não encontrou
+cronogramas bons para 243 atividades em 36 minutos. A combinação de
+caminho crítico e esquema serial resolveu a instância completa em menos
+de um segundo, com prova de otimalidade pela igualdade entre o limite
+inferior e o prazo encontrado. Na instância pequena, em que a capacidade
+limita o prazo, foi o solver que provou o ótimo. Os dois métodos se
+completam.
+
+As principais limitações são a ausência, na base, do bloco do estudo
+preliminar, substituído por datas de liberação, as capacidades estimadas
+pelo pico do praticado e o tratamento das durações e do número de revisões
+como dados. Como trabalhos futuros, propõe-se incluir o estudo preliminar
+no modelo, para medir o efeito de liberar as disciplinas por pacotes,
+tratar o número de revisões como decisão, e usar o cronograma heurístico como solução inicial do solver em
+instâncias em que a capacidade esteja ativa.

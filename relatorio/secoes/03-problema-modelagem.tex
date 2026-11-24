@@ -4,24 +4,207 @@
 \label{sec:problema}
 
 \subsection{Contexto e delimitação do problema}
-\preencher{Descrever as atividades, equipes, durações e dependências.
-Explicar a unidade de tempo, o significado da capacidade e as hipóteses
-adotadas. Distinguir dados de entrada, decisões do modelo e aspectos fora
-do escopo.}
+\label{sec:contexto}
+
+O estudo trata do cronograma de \emph{projeto}, e não de obra, de um
+empreendimento residencial de grande porte, com três torres e um
+embasamento. O desenvolvimento envolve arquitetura (ARQ), interiores (ARI),
+estrutura, fundação e contenção, instalações (elétrica, hidráulica, gás,
+climatização, automação, proteção contra incêndio), caixilhos, paisagismo,
+luminotécnica, acústica e consultorias. Cada disciplina passa por etapas
+sucessivas, como estudo preliminar (EP), anteprojeto (AP) e projeto
+executivo. Em cada etapa, o projetista emite uma revisão (R00, R01, \ldots),
+o cliente analisa e devolve comentários, e uma nova revisão é emitida até a
+aprovação.
+
+Na prática, a arquitetura conduz o processo. As demais disciplinas
+elaboram suas emissões a partir de uma base de arquitetura. A arquitetura
+recebe essas emissões junto com a construtora, que faz a análise técnica e
+a compatibilização, e emite uma nova revisão que inicia o ciclo seguinte.
+Por isso a arquitetura acumula mais revisões que as demais disciplinas.
+Quando o projeto é dividido em zonas (torres, embasamento), cada etapa
+costuma avançar zona por zona, como pacotes de uma mesma entrega.
+
+A pergunta do estudo é: \emph{mantidas as mesmas atividades, durações,
+dependências e equipes, quanto o prazo total pode cair apenas com a escolha
+dos dias de início?} Um cronograma com essas características é uma
+instância do problema de sequenciamento de projetos com restrição de
+recursos (RCPSP, do inglês \emph{resource-constrained project scheduling
+problem}), em que se minimiza o prazo de conclusão (\emph{makespan}).
+
+\paragraph{Fonte e preparação dos dados.}
+Os dados vêm da revisão R14 do cronograma do empreendimento, anonimizada
+antes de entrar no repositório. As atividades de execução de obra foram
+retiradas, e o recorte ficou restrito ao processo de projeto. A base
+resultante tem 243 atividades, 1.008 vínculos de precedência e 39 equipes
+(Tabela~\ref{tab:base}). Na preparação, 22 vínculos foram descartados por
+formarem ciclos e 37 por serem incompatíveis com as datas normalizadas do
+cronograma; a lista individual desses descartes não foi preservada. O
+modelo aceita outras revisões do cronograma com o mesmo formato de dados.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Características da base de dados utilizada.}
+  \label{tab:base}
+  \small
+  \begin{tabular}{lr}
+    \toprule
+    Item & Valor \\
+    \midrule
+    Atividades (sem agrupadores) & 243 \\
+    Vínculos de precedência & 1.008 \\
+    \quad término--início (TI) & 1.003 \\
+    \quad início--início (II) & 2 \\
+    \quad término--término (TT) & 2 \\
+    \quad início--término (IT) & 1 \\
+    Equipes (recursos) & 39 \\
+    Prazo do cronograma praticado (referência) & 310 dias úteis \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Significado dos parâmetros.}
+A \emph{duração} de uma atividade é o intervalo entre o início e a
+entrega, em dias úteis, com as pausas internas já incluídas. Não é o
+esforço em horas. A \emph{capacidade} de uma equipe é o número de
+atividades que ela mantém abertas ao mesmo tempo. Ela foi estimada pelo
+pico de atividades simultâneas observado no cronograma praticado, e não por
+um levantamento do quadro real das equipes. As atividades de análise e
+aprovação são atribuídas às equipes do cliente, e as emissões às equipes do
+projetista. Quando uma atividade envolve várias equipes, todas são
+ocupadas ao mesmo tempo. O calendário é abstrato, em dias úteis
+consecutivos, sem feriados.
+
+\paragraph{Cronograma de referência.}
+O cronograma praticado, normalizado para a mesma escala de dias úteis,
+termina em 310 dias e atende a todos os vínculos e capacidades da base.
+Ele é a referência de comparação e define o horizonte do modelo.
+
+\paragraph{Fora do escopo.}
+O modelo não escolhe quais atividades executar, não altera durações, não
+troca a equipe responsável por uma atividade e não decide o número de
+revisões. Custos, contratação e a reprogramação de um projeto já em
+andamento também estão fora do escopo: o replanejamento parte do dia zero e
+inclui atividades que, na realidade, já foram executadas.
 
 \subsection{Conjuntos, parâmetros e variáveis de decisão}
-\preencher{Definir a notação antes das equações, preferencialmente em uma
-tabela com símbolo, significado e unidade. Informar os domínios das
-variáveis e como os dados do cronograma são traduzidos em parâmetros.}
+\label{sec:notacao}
+
+A Tabela~\ref{tab:notacao} reúne a notação. A unidade de tempo é o dia
+útil, e os dias são numerados a partir de zero.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Notação do modelo.}
+  \label{tab:notacao}
+  \small
+  \begin{tabularx}{\textwidth}{lXl}
+    \toprule
+    Símbolo & Significado & Unidade \\
+    \midrule
+    $A$ & atividades do modelo & -- \\
+    $A^{+}$ & atividades com duração positiva, $\{a\in A : d_a>0\}$ & -- \\
+    $K$ & equipes & -- \\
+    $T=\{0,\ldots,H-1\}$ & dias do horizonte & dia \\
+    $T_a=\{0,\ldots,H-\max(d_a,1)\}$ & dias em que $a$ pode começar & dia \\
+    $P$ & vínculos $e=(i,j)$ de predecessora $i$ para sucessora $j$;
+          $P^{TI},P^{II},P^{TT},P^{IT}$ por tipo & -- \\
+    \midrule
+    $d_a$ & duração da atividade $a$ & dia \\
+    $R_k$ & capacidade da equipe $k$ (atividades simultâneas) & atividades \\
+    $q_{ak}$ & 1 se a equipe $k$ participa de $a$; 0 caso contrário & -- \\
+    $\ell_e$ & defasagem (\emph{lag}) do vínculo $e$ & dia \\
+    $H$ & horizonte de planejamento ($H=310$) & dia \\
+    $r_a$ & data de liberação de $a$ (apenas na variante com liberações) & dia \\
+    \midrule
+    $x_{a\tau}\in\{0,1\}$ & 1 se a atividade $a$ começa no dia $\tau$ & -- \\
+    $C_{\max}\ge 0$ & prazo total do projeto & dia \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+A partir de $x$ definem-se, sem novas variáveis, o início e o dia da
+entrega de cada atividade:
+\begin{equation}
+  S_a=\sum_{\tau\in T_a}\tau\,x_{a\tau},
+  \qquad
+  F_a=S_a+\max(d_a,1)-1,
+  \qquad a\in A.
+  \label{eq:inicio-entrega}
+\end{equation}
+A entrega é inclusiva: uma atividade de três dias que começa no dia 2
+ocupa os dias 2, 3 e 4 e é entregue no dia 4.
 
 \subsection{Formulação matemática}
-\preencher{Apresentar a função objetivo e as restrições em equações
-numeradas. Explicar cada grupo de restrições em texto e manter os índices,
-os domínios e as convenções de tempo coerentes com a implementação.
-Incluir apenas os componentes efetivamente adotados no estudo.}
+\label{sec:formulacao}
 
-% Exemplo de estrutura, a substituir pela formulação validada:
-% \begin{equation}
-%   \min C_{\max}
-%   \label{eq:objetivo}
-% \end{equation}
+A formulação é uma programação linear inteira mista indexada no tempo:
+\begin{align}
+  \min\quad & C_{\max}
+    \label{eq:objetivo}\\
+  \text{s.a.}\quad
+  & \sum_{\tau\in T_a} x_{a\tau}=1,
+    && a\in A,
+    \label{eq:inicio-unico}\\
+  & S_j \ge F_i+\ell_e,
+    && e=(i,j)\in P^{TI},
+    \label{eq:ti}\\
+  & S_j \ge S_i+\ell_e,
+    && e=(i,j)\in P^{II},
+    \label{eq:ii}\\
+  & F_j \ge F_i+\ell_e,
+    && e=(i,j)\in P^{TT},
+    \label{eq:tt}\\
+  & F_j \ge S_i+\ell_e,
+    && e=(i,j)\in P^{IT},
+    \label{eq:it}\\
+  & \sum_{a\in A^{+}} q_{ak}\!\!
+    \sum_{\substack{\tau\in T_a\\ t-d_a+1\le\tau\le t}}\!\! x_{a\tau}
+    \le R_k,
+    && k\in K,\; t\in T,
+    \label{eq:capacidade}\\
+  & C_{\max}\ge F_a+1,
+    && a\in A,
+    \label{eq:prazo}\\
+  & x_{a\tau}\in\{0,1\},
+    && a\in A,\;\tau\in T_a.
+    \label{eq:dominio}
+\end{align}
+
+A função objetivo~\eqref{eq:objetivo} minimiza o prazo total. As
+restrições~\eqref{eq:inicio-unico} obrigam cada atividade a ter exatamente
+um dia de início: nenhuma pode ser omitida. As restrições~\eqref{eq:ti}
+a~\eqref{eq:it} representam os quatro tipos de vínculo. No tipo TI, a
+sucessora começa a partir da entrega da predecessora mais a defasagem; nos
+demais, a comparação usa o início ou a entrega indicados pelo nome do
+tipo. São desigualdades: II não obriga inícios iguais, e TT não obriga
+entregas iguais. As restrições~\eqref{eq:capacidade} contam, para cada
+equipe e cada dia, as atividades abertas naquele dia e limitam essa
+contagem à capacidade da equipe. A soma interna vale 1 exatamente quando
+o início escolhido mantém a atividade aberta no dia $t$. As
+restrições~\eqref{eq:prazo} fazem o prazo cobrir todas as entregas; o
+termo $+1$ converte o índice do último dia, que começa em zero, em número
+de dias. O domínio $T_a$ já impede entregas além do horizonte.
+
+\paragraph{Convenção dos vínculos TI.}
+Com defasagem zero, a restrição~\eqref{eq:ti} permite que a sucessora
+comece no mesmo dia em que a predecessora é entregue, com um dia de
+sobreposição. A convenção foi aprovada pelo grupo e é a mesma usada para
+normalizar o cronograma praticado, de modo que a comparação entre os dois
+cronogramas é feita sob a mesma regra.
+
+\paragraph{Variante com datas de liberação.}
+Na base, uma atividade sem predecessora pode começar no dia zero. Para
+representar atividades que, na realidade, aguardavam entregas ausentes da
+base (Seção~\ref{sec:largadas}), acrescenta-se
+\begin{equation}
+  S_a \ge r_a, \qquad a\in A^{L},
+  \label{eq:liberacao}
+\end{equation}
+em que $A^{L}$ é o conjunto dessas atividades e $r_a$ é o dia em que
+começaram no cronograma praticado.
+
+\paragraph{Tamanho.}
+Com $H=310$, a formulação tem 72.381 variáveis binárias de início, além de
+$C_{\max}$, e 13.584 restrições: 243 de início único, 1.008 de precedência,
+$39\times310=12.090$ de capacidade e 243 de prazo.

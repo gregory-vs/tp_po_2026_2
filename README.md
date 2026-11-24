@@ -58,7 +58,7 @@ No PowerShell, também é possível executar diretamente:
 .\.venv\Scripts\python.exe codigo/main.py
 ```
 
-### Heurística e análise de sensibilidade (sem CBC, cerca de 10 s)
+### Heurística e análise de sensibilidade (sem CBC, cerca de 40 s)
 
 ```bash
 python codigo/sensibilidade.py

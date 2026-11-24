@@ -24,6 +24,15 @@
 \usepackage{subcaption}
 \usepackage[section]{placeins}
 
+% Gráficos desenhados no próprio LaTeX (dados nas seções) e pseudocódigo.
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Entrada:}}
+\renewcommand{\algorithmicensure}{\textbf{Saída:}}
+
 % Seções numeradas com hierarquia discreta.
 \usepackage{titlesec}
 \titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}

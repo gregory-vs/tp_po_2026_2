@@ -4,13 +4,131 @@
 \label{sec:algoritmo}
 
 \subsection{Procedimento de solução}
-\preencher{Explicar o fluxo da leitura e validação dos dados até a construção
-do modelo, resolução e verificação do cronograma. Apresentar pseudocódigo
-ou uma sequência de etapas quando isso facilitar a reprodução do método.}
+\label{sec:procedimento}
+
+O procedimento tem cinco etapas, todas implementadas no repositório do
+trabalho:
+
+\begin{enumerate}
+  \item \textbf{Leitura e auditoria dos dados.} Os arquivos de atividades,
+    vínculos e equipes são lidos e conferidos antes de qualquer cálculo:
+    identificadores únicos, durações não negativas, equipes cadastradas,
+    vínculos válidos e ausência de ciclos na rede.
+  \item \textbf{Limite inferior pelo caminho crítico.} O método do caminho
+    crítico (CPM) calcula, ignorando as equipes, o início mais cedo de cada
+    atividade em ordem topológica. O maior valor de $F_a+1$ é o
+    comprimento da cadeia de vínculos mais longa. Como acrescentar
+    restrições de capacidade só pode manter ou aumentar o prazo, esse valor
+    é um limite inferior (LB) para o ótimo da formulação da
+    Seção~\ref{sec:formulacao}. O mesmo cálculo, de trás para a frente, dá
+    o início mais tarde e a folga total de cada atividade.
+  \item \textbf{Solução.} Foram usados dois métodos, descritos a seguir:
+    (a) a formulação indexada no tempo resolvida por um solver de
+    programação inteira; (b) uma heurística construtiva, o esquema serial
+    de geração de cronogramas.
+  \item \textbf{Verificação independente.} Todo cronograma, venha do
+    solver ou da heurística, passa por um verificador separado, que
+    recalcula início e entrega e confere cada vínculo, a capacidade de cada
+    equipe em cada dia e o prazo declarado.
+  \item \textbf{Análise de sensibilidade.} Os parâmetros são alterados em
+    cópias na memória (capacidades, durações, vínculos ou datas de
+    liberação), e os passos 2 a 4 são repetidos para cada cenário.
+\end{enumerate}
+
+\paragraph{Método (a): programação inteira com o CBC.}
+A formulação~\eqref{eq:objetivo}--\eqref{eq:dominio} é montada com a
+biblioteca PuLP e resolvida pelo CBC, um solver de código aberto do
+projeto COIN-OR que aplica \emph{branch and cut}: resolve relaxações
+lineares, acrescenta cortes e ramifica sobre variáveis fracionárias. O
+procedimento implementado pelo grupo é a montagem do modelo, o
+fornecimento de uma solução inicial e a verificação do resultado; a busca
+é feita pelo algoritmo interno do solver. Como solução inicial
+(\emph{warm start}), o solver recebe o cronograma praticado, que é viável
+e tem prazo de 310 dias.
+
+\paragraph{Método (b): limite inferior e esquema serial.}
+O esquema serial de geração de cronogramas (\emph{serial schedule
+generation scheme}, SGS) é o método construtivo clássico do RCPSP. As
+atividades são escolhidas uma a uma, entre as que já têm todas as
+predecessoras programadas, segundo uma regra de prioridade. Cada atividade
+escolhida é colocada no primeiro dia que respeita os vínculos e no qual
+todas as suas equipes têm capacidade livre durante toda a duração
+(Algoritmo~\ref{alg:sgs}). O cronograma resultante é sempre viável.
+
+\begin{algorithm}[htbp]
+  \caption{Esquema serial de geração de cronogramas.}
+  \label{alg:sgs}
+  \small
+  \begin{algorithmic}[1]
+    \Require atividades $A$, vínculos $P$, durações $d$, equipes $q$,
+      capacidades $R$, regra de prioridade $\pi$
+    \Ensure inícios $S_a$ de todas as atividades
+    \State $\mathcal{S}\gets\emptyset$ \Comment{atividades já programadas}
+    \State $u_k(t)\gets 0$ para toda equipe $k$ e todo dia $t$
+      \Comment{ocupação}
+    \While{$\mathcal{S}\ne A$}
+      \State $E\gets\{j\in A\setminus\mathcal{S}:$ todas as
+        predecessoras de $j$ estão em $\mathcal{S}\}$
+      \State $j\gets\arg\min_{a\in E}\pi(a)$
+      \State $t\gets$ menor início de $j$ que atende aos vínculos com as
+        predecessoras já programadas
+      \While{existe $k$ com $q_{jk}=1$ e $x\in\{t,\ldots,t+d_j-1\}$ com
+        $u_k(x)\ge R_k$}
+        \State $t\gets t+1$
+      \EndWhile
+      \State $S_j\gets t$; \; $u_k(x)\gets u_k(x)+1$ para $q_{jk}=1$ e
+        $x\in\{t,\ldots,t+d_j-1\}$
+      \State $\mathcal{S}\gets\mathcal{S}\cup\{j\}$
+    \EndWhile
+    \State \Return $S$
+  \end{algorithmic}
+\end{algorithm}
+
+O SGS é executado com quatro regras determinísticas, calculadas pelo CPM:
+menor início mais tarde, menor folga total, menor início mais cedo e maior
+duração. Em seguida, são feitas 30 execuções com o início mais tarde
+perturbado por um ruído aleatório proporcional à folga, com semente fixa
+para que o resultado seja reproduzível. Fica o cronograma de menor prazo,
+que é um limite superior (UB) para o ótimo.
+
+\paragraph{Prova de otimalidade.}
+Se o melhor cronograma do SGS tiver prazo igual ao limite inferior do CPM,
+ele é ótimo: nenhum cronograma viável termina antes do LB, e existe um
+cronograma viável que termina exatamente no LB. O gap é zero. Quando
+$\text{UB}>\text{LB}$, o UB é apenas um limite superior, e o ótimo fica no
+intervalo $[\text{LB},\text{UB}]$. Esse critério vale também para cada
+cenário da análise de sensibilidade.
+
+\paragraph{Datas de liberação.}
+A restrição~\eqref{eq:liberacao} é representada, no CPM e no SGS, por uma
+atividade fictícia sem equipe, de duração $r_a+1$, ligada a $a$ por um
+vínculo TI com defasagem zero. Pela convenção da
+equação~\eqref{eq:inicio-entrega}, isso impõe $S_a\ge r_a$ sem consumir
+capacidade.
 
 \subsection{Implementação e critérios de parada}
-\preencher{Identificar a linguagem, a biblioteca de modelagem e o solver,
-com as versões efetivamente utilizadas. Distinguir o procedimento
-implementado pelo grupo do algoritmo interno do solver. Informar limites
-de tempo, tolerâncias, critérios de parada e tratamento de instâncias sem
-solução ou sem ótimo comprovado.}
+\label{sec:implementacao}
+
+O código foi escrito em Python (versões 3.13 e 3.14), com PuLP 3.3.0 e
+CBC 2.10.3. A heurística, o CPM, o verificador e a análise de
+sensibilidade usam apenas a biblioteca padrão do Python.
+
+\begin{itemize}
+  \item \textbf{CBC:} limite de tempo de 1.800 segundos, tolerância de gap
+    zero (o solver só declara ótimo com prova), horizonte $H=310$ e
+    \emph{warm start} com o cronograma praticado. Ao final, a solução é
+    classificada como ótimo comprovado, viável sem prova (parada por tempo
+    com solução) ou sem solução. O gap é calculado como
+    $(\text{UB}-\text{LB})/\text{UB}$.
+  \item \textbf{SGS:} quatro regras determinísticas e 30 amostras
+    aleatórias com semente 2026. A busca para assim que um cronograma
+    atinge o limite inferior, porque nenhum outro pode ser melhor.
+  \item \textbf{Aceitação:} um cronograma só é aceito depois de aprovado
+    pelo verificador independente. Uma solução reprovada não é registrada
+    como resultado.
+\end{itemize}
+
+O código-fonte está em \texttt{codigo/}: \texttt{main.py} executa o
+método (a), \texttt{heuristica.py} implementa o CPM e o SGS,
+\texttt{validacao.py} é o verificador e \texttt{sensibilidade.py} roda o
+método (b) na base e em todos os cenários, em cerca de 40 segundos.

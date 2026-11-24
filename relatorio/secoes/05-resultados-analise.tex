@@ -4,19 +4,502 @@
 \label{sec:resultados}
 
 \subsection{Protocolo experimental}
-\preencher{Caracterizar as instâncias, a origem e a preparação dos dados,
-o ambiente computacional e os cenários comparados. Definir as métricas e
-o cronograma de referência, garantindo condições comparáveis entre os
-experimentos.}
+\label{sec:protocolo}
+
+\paragraph{Instâncias.}
+Foram usadas duas instâncias. A \emph{pequena}, com 12 atividades,
+24 vínculos e 9 equipes, é um exemplo montado à mão para conferir o modelo
+e comparar os métodos. A \emph{completa} é a base real descrita na
+Seção~\ref{sec:contexto}, com 243 atividades.
+
+\paragraph{Duas versões da base completa.}
+A base completa foi analisada em duas versões, que diferem apenas no
+tratamento das atividades sem predecessora:
+\begin{itemize}
+  \item \textbf{largadas livres}: toda atividade sem predecessora pode
+    começar no dia zero, como na formulação da
+    Seção~\ref{sec:formulacao};
+  \item \textbf{com liberações}: as 27 atividades sem predecessora que, no
+    cronograma praticado, começaram depois do dia zero ficam presas a essa
+    data, pela restrição~\eqref{eq:liberacao}. A
+    Seção~\ref{sec:largadas} mostra por que essa versão é a mais
+    próxima da realidade.
+\end{itemize}
+
+\paragraph{Métricas.}
+Para cada execução são registrados o prazo do melhor cronograma viável
+(UB), o limite inferior (LB), o gap $(\text{UB}-\text{LB})/\text{UB}$, o
+tempo de execução e a situação: ótimo comprovado ($\text{UB}=\text{LB}$)
+ou viável sem prova. A referência é o cronograma praticado, de 310 dias.
+
+\paragraph{Cenários.}
+A análise de sensibilidade altera um parâmetro por vez, ou uma combinação
+deles, e resolve de novo: capacidade das equipes ($\pm1$ em todas, $-1$ em
+cada uma, capacidade 1 em todas), durações por tipo de atividade (emissão,
+análise ou todas, com reduções de 10\%, 20\%, 30\% e 50\%, arredondadas
+para cima e com mínimo de um dia), prazo máximo de análise do cliente,
+redução de 20\% por disciplina e medidas pontuais nas cadeias críticas. Em
+programação inteira, os multiplicadores da relaxação linear não dão o
+efeito exato da mudança de um parâmetro. Por isso o efeito é medido
+resolvendo cada cenário de novo, e não pelos preços-sombra.
+
+\paragraph{Ambiente.}
+As execuções do CBC na instância completa foram feitas em um computador
+com Windows 11 e Python 3.13. A heurística, a análise de sensibilidade e o
+CBC na instância pequena foram executados em um computador com Windows 10
+e Python 3.14. Todos os registros, com parâmetros e cronogramas, estão em
+\texttt{resultados/}.
 
 \subsection{Resultados computacionais}
-\preencher{Apresentar somente resultados obtidos e verificados. Informar,
-por instância e cenário, prazo, tempo de execução, estado da solução e gap
-quando disponível. Numerar tabelas e figuras e mencioná-las no texto.
-Distinguir solução viável de ótimo comprovado.}
+\label{sec:resultados-comp}
+
+A Tabela~\ref{tab:metodos} compara os métodos, e a
+Figura~\ref{fig:prazos} resume os prazos da instância completa.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Comparação entre os métodos. LB: limite inferior; UB: melhor
+  prazo viável encontrado. Na heurística, o LB é o do caminho crítico.}
+  \label{tab:metodos}
+  \small
+  \begin{tabular}{llrrrrl}
+    \toprule
+    Instância & Método & UB & LB & Gap & Tempo & Situação \\
+    \midrule
+    Pequena  & CBC                   &  45 &  45 & 0\%    & 1,4 s     & ótimo comprovado \\
+             & CPM + SGS             &  45 &  44 & 2,2\%  & $<$0,1 s  & viável sem prova \\
+    \midrule
+    Completa & cronograma praticado  & 310 & --  & --     & --        & referência \\
+             & CBC (\emph{warm start}) & 307 & 187 & 39,1\% & 2.181 s & viável sem prova \\
+             & CPM + SGS, largadas livres & 187 & 187 & 0\% & 0,25 s & ótimo comprovado \\
+             & CPM + SGS, com liberações  & 285 & 285 & 0\% & 0,04 s & ótimo comprovado \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar, width=0.82\textwidth, height=5.2cm,
+      xmin=0, xmax=345, bar width=11pt,
+      xlabel={prazo total (dias úteis)},
+      symbolic y coords={livre,liberacoes,cbc,praticado},
+      ytick=data,
+      yticklabels={
+        {ótimo, largadas livres},
+        {ótimo, com liberações},
+        {CBC, parada por tempo},
+        {cronograma praticado}},
+      y dir=reverse,
+      nodes near coords, nodes near coords align={horizontal},
+      enlarge y limits=0.2,
+      axis x line*=bottom, axis y line*=left,
+      ]
+      \addplot[fill=gray!55, draw=gray!80] coordinates {
+        (187,livre) (285,liberacoes) (307,cbc) (310,praticado)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Prazo total na instância completa. Os dois valores de ótimo
+  são comprovados; o do CBC parou pelo limite de tempo, sem prova.}
+  \label{fig:prazos}
+\end{figure}
+
+\paragraph{Instância pequena.}
+Nela, a capacidade das equipes limita o prazo: o caminho crítico sem
+equipes daria 44 dias, mas o ótimo comprovado pelo CBC é de 45. A
+heurística encontra o cronograma de 45 dias, mas não consegue provar a
+otimalidade sozinha, porque fica um dia acima do seu limite inferior.
+
+\paragraph{Instância completa, CBC.}
+O CBC partiu do cronograma praticado (310 dias). A relaxação linear da
+raiz já deu 187 dias em cerca de 3 segundos, e esse limite inferior não
+mudou até o fim. O solver passou cerca de 566 segundos no nó raiz, com
+cortes e heurísticas internas, explorou 823 nós e encontrou apenas duas
+melhorias, de 308 e 307 dias, antes de parar pelo tempo. O limite estava
+correto desde o início; a dificuldade foi encontrar um cronograma bom
+dentro de uma formulação com 72.381 variáveis binárias.
+
+\paragraph{Instância completa, heurística.}
+Na versão com largadas livres, o SGS encontrou um cronograma de 187 dias,
+igual ao limite inferior. É, portanto, o ótimo da formulação, com redução
+de 123 dias (39,7\%) em relação à referência. Na versão com liberações, o
+ótimo comprovado é de 285 dias, com redução de 25 dias (8,1\%). Os dois
+cronogramas foram aprovados pelo verificador independente.
+
+Os dois métodos se completam. Na instância pequena, a capacidade está
+ativa, a heurística não prova nada e o CBC resolve em segundos. Na
+completa, a capacidade não limita o prazo, o limite do caminho crítico é
+justo e a heurística prova a otimalidade em menos de um segundo, enquanto
+o CBC não fecha em 36 minutos.
+
+\subsection{De onde vem o ganho}
+\label{sec:origem-ganho}
+
+\paragraph{Esperas no cronograma praticado.}
+Para cada atividade do praticado, define-se a \emph{espera} como a
+diferença entre o início praticado e o menor início que os vínculos
+permitiriam, dadas as datas praticadas das predecessoras. A
+Tabela~\ref{tab:esperas} mostra o caminho que determina os 310 dias.
+Dos dias desse caminho, 132 aparecem como espera: 75 na largada, antes da
+primeira emissão, e 31 antes da compatibilização final. Os 31 dias da
+compatibilização são um efeito da base, e não uma espera real. No
+cronograma original, a compatibilização depende de todo o R01 de
+estrutura do AP e, no praticado, começa logo depois da análise do R01 de
+estrutura da última zona. Na base, só a primeira zona ficou ligada a ela.
+Com esse vínculo restaurado, a espera cai para 1 dia, e a espera real do
+caminho fica em 102 dias, dos quais 75 estão na largada.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Caminho que determina o prazo do cronograma praticado.
+  Espera: dias além do que os vínculos exigem.}
+  \label{tab:esperas}
+  \small
+  \begin{tabular}{llrrr}
+    \toprule
+    Atividade & Equipe & Início & Duração & Espera \\
+    \midrule
+    Emissão PCI, AP, zona 4 & projetista PCI & 75 & 28 & 75 \\
+    5 emissões ARQ, AP, uma zona após a outra & projetista ARQ & 110--187 & 96 & 13 \\
+    Análise ARQ, AP & cliente (produto) & 209 & 5 & 3 \\
+    Emissão ARQ, AP, R01 & projetista ARQ & 214 & 5 & 1 \\
+    Emissão fundação, AP & fundação e contenção & 220 & 20 & 2 \\
+    Compatibilização final do AP & cliente (engenharia) & 270 & 15 & 31$^{a}$ \\
+    Análise da compatibilização & cliente (produto) & 290 & 10 & 6 \\
+    Retrabalho após a compatibilização & todas & 300 & 10 & 1 \\
+    \midrule
+    Total & & & & 132 \\
+    \bottomrule
+  \end{tabular}
+
+  \smallskip
+  \parbox{0.9\textwidth}{\footnotesize $^{a}$Espera aparente: corresponde
+  ao R01 de estrutura das demais zonas e à sua análise, ligados à
+  compatibilização no cronograma original, mas não na base. A espera real
+  é de 1 dia.}
+\end{table}
+
+\paragraph{Largadas tardias.}
+\label{sec:largadas}
+O maior bloco de espera está nas atividades sem predecessora. No
+praticado, 27 delas começaram depois do dia zero. Prendendo cada uma na
+sua data praticada, uma de cada vez, mede-se quanto o limite inferior
+sobe (Tabela~\ref{tab:largadas}). As que mais pesam são os mapas de
+esquadrias de arquitetura das três torres e do embasamento: sozinhos, eles
+levam o prazo de 187 para 285 dias.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Efeito de prender cada atividade sem predecessora na data em
+  que começou no praticado (aumento do limite inferior sobre 187 dias).}
+  \label{tab:largadas}
+  \small
+  \begin{tabular}{lrr}
+    \toprule
+    Atividade & Início praticado & Efeito (dias) \\
+    \midrule
+    Mapas de esquadrias ARQ, 3 torres e embasamento & 120 & $+98$ \\
+    Emissão geral de arquitetura & 220 & $+88$ \\
+    Emissão inicial de interiores & 75 & $+75$ \\
+    Emissão PCI, AP & 75 & $+71$ \\
+    Análises ARQ, AP, zona 1 & 100 & $+67$ \\
+    Emissões fundação e contenção, AP & 75 & $+66$ \\
+    Emissões elétrica, climatização, piscina, automação, gás e
+      hidráulica, AP, e análise geral inicial & 41--141 & $+26$ a $+56$ \\
+    Outras 8 atividades & 75--162 & 0 \\
+    \midrule
+    Todas as 27 juntas & & $+98$ (285 dias) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+A conferência no cronograma original explica essas esperas. Na revisão
+R14, as emissões do AP de fundação, contenção, PCI, elétrica, gás,
+climatização e acústica, assim como os mapas de esquadrias, têm
+predecessoras dentro do bloco do estudo preliminar. Esse bloco está
+recolhido no documento de origem e, por isso, não entrou na base. A base
+não tem nenhuma atividade de arquitetura antes do dia 75. As largadas
+tardias são, em grande parte, a espera das disciplinas pela arquitetura,
+o que é coerente com o processo descrito na Seção~\ref{sec:contexto}, e
+não uma folga do planejamento.
+
+Por isso, a versão \emph{com liberações} é a estimativa realista do ganho
+da reordenação: \textbf{25 dias (8,1\%)}. É uma estimativa conservadora,
+porque a data praticada pode ser posterior ao fim das entregas ausentes. Os
+187 dias são o limite da reordenação no caso em que as disciplinas fossem
+liberadas desde o início, e a diferença de 98 dias mede o peso da etapa de
+arquitetura que antecede o AP.
+
+\subsection{O que limita o prazo}
+\label{sec:gargalos}
+
+\paragraph{As equipes não limitam o prazo.}
+Nas duas versões, o ótimo com as capacidades estimadas é igual ao limite
+inferior sem capacidade (187 e 285 dias). Na linguagem de folgas
+complementares, as restrições~\eqref{eq:capacidade} não estão ativas no
+ótimo: dar uma frente a mais a todas as equipes não reduz o prazo
+(Tabela~\ref{tab:sensibilidade}). Quem define o prazo é a cadeia de
+vínculos, e cada dia a menos numa atividade dessa cadeia vale até um dia a
+menos no projeto.
+
+\paragraph{Cadeia na versão com liberações.}
+A Figura~\ref{fig:gantt} mostra a cadeia de 285 dias. Ela reproduz o ciclo
+do AP descrito na Seção~\ref{sec:contexto}: os mapas de esquadrias são
+liberados no dia 120 e analisados, os caixilhos emitem o seu AP, e a
+arquitetura emite o AP de cada torre e do embasamento, um após o outro,
+depois de receber as disciplinas. Só a arquitetura e os caixilhos estão
+na cadeia; são 14 atividades com folga zero.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[x=0.034cm, y=-0.52cm]
+    % eixo (y cresce para baixo: linha 1 no topo)
+    \draw[gray!60] (0,10.1) -- (285,10.1);
+    \foreach \dia in {0,50,100,150,200,250,285} {
+      \draw[gray!60] (\dia,10.1) -- (\dia,10.25);
+      \node[font=\scriptsize, below] at (\dia,10.25) {\dia};
+    }
+    \node[font=\scriptsize] at (142.5,11.3) {dia};
+    % barras: inicio / linha / duracao / rotulo / cor
+    \foreach \ini/\lin/\dur/\rot/\cor in {
+        0/1/120/{espera do estudo preliminar (fora da base)}/gray!25,
+        120/2/52/{mapas de esquadrias ARQ}/gray!70,
+        171/3/5/{análise do mapa (cliente)}/gray!35,
+        175/4/30/{AP R00 de caixilhos}/gray!70,
+        204/5/20/{AP de ARQ, zona 1}/gray!70,
+        223/6/20/{AP de ARQ, zona 2}/gray!70,
+        242/7/20/{AP de ARQ, zona 3}/gray!70,
+        261/8/15/{AP de ARQ, zona 4}/gray!70,
+        275/9/10/{análise final (cliente)}/gray!35} {
+      \fill[\cor] (\ini,{\lin+0.15}) rectangle ({\ini+\dur},{\lin+0.85});
+      \node[font=\scriptsize, anchor=east] at (-3,{\lin+0.5}) {\rot};
+    }
+  \end{tikzpicture}
+  \caption{Cadeia que define o prazo de 285 dias na versão com liberações.
+  Barras escuras: emissões do projetista; claras: análises do cliente. A
+  numeração das zonas segue a base anonimizada.}
+  \label{fig:gantt}
+\end{figure}
+
+\paragraph{Cadeia na versão com largadas livres.}
+Sem as liberações, a cadeia de 187 dias passa por 21 atividades, quase
+todas de interiores: emissões do projetista intercaladas com análises do
+cliente, do conceito ao AP, terminando no luminotécnico e na consultoria
+ambiental. Logo atrás vem uma segunda cadeia, de arquitetura do AP, com
+183 dias. Por isso, nessa versão, uma medida que encurte só interiores
+rende no máximo 4 dias: a cadeia de arquitetura assume.
+
+\subsection{Análise de sensibilidade}
+\label{sec:sensibilidade}
+
+A Tabela~\ref{tab:sensibilidade} reúne os cenários gerais nas duas versões
+da base, e a Figura~\ref{fig:curva} mostra o efeito das reduções de
+duração.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Variação do prazo, em dias, em relação ao ótimo de cada versão
+  da base. Valores com $^{*}$ são limites superiores (UB $>$ LB); os demais
+  são ótimos comprovados.}
+  \label{tab:sensibilidade}
+  \small
+  \begin{tabular}{lrr}
+    \toprule
+    Cenário & Largadas livres (187) & Com liberações (285) \\
+    \midrule
+    Todas as equipes $+1$                  &   0       &   0 \\
+    Todas as equipes $-1$                  & $+7^{*}$  &   0 \\
+    Todas as equipes com capacidade 1      & $+427^{*}$ & -- \\
+    \midrule
+    Análise do cliente 10\% mais rápida    &  $-3$     &   0 \\
+    Análise do cliente 50\% mais rápida    &  $-6$     &  $-2$ \\
+    Análise do cliente em até 5 dias       &  $-4$     &   0 \\
+    \midrule
+    Emissão 10\% mais rápida               & $-10$     & $-15$ \\
+    Emissão 20\% mais rápida               & $-22^{*}$ & $-21$ \\
+    Emissão 50\% mais rápida               & $-35^{*}$ & $-37$ \\
+    \midrule
+    Todas as durações 10\% menores         & $-14$     & $-15$ \\
+    Todas as durações 20\% menores         & $-38$     & $-21$ \\
+    \midrule
+    Arquitetura 20\% mais rápida           &   0       & $-10$ \\
+    Caixilhos 20\% mais rápida             &   0       &  $-6$ \\
+    Interiores 20\% mais rápida            &  $-4$     &   0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.78\textwidth, height=6cm,
+      xlabel={redução da duração (\%)},
+      ylabel={variação do prazo (dias)},
+      xtick={0,10,20,30,50}, xmin=0, xmax=50,
+      ymin=-40, ymax=2,
+      legend pos=south west, legend style={font=\scriptsize},
+      grid=major, grid style={gray!20},
+      ]
+      \addplot[thick, mark=*, black] coordinates
+        {(0,0) (10,-15) (20,-21) (30,-26) (50,-37)};
+      \addlegendentry{emissão, com liberações}
+      \addplot[thick, mark=o, black, dashed] coordinates
+        {(0,0) (10,-10) (20,-22) (30,-25) (50,-35)};
+      \addlegendentry{emissão, largadas livres$^{*}$}
+      \addplot[thick, mark=square*, gray] coordinates
+        {(0,0) (10,0) (20,-1) (30,-1) (50,-2)};
+      \addlegendentry{análise, com liberações}
+      \addplot[thick, mark=square, gray, dashed] coordinates
+        {(0,0) (10,-3) (20,-5) (30,-5) (50,-6)};
+      \addlegendentry{análise, largadas livres}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Efeito de reduzir as durações de emissão ou de análise.
+  $^{*}$Na versão com largadas livres, os pontos de 20\%, 30\% e 50\% da
+  emissão são limites superiores; os demais pontos são ótimos
+  comprovados.}
+  \label{fig:curva}
+\end{figure}
+
+Três resultados aparecem nas duas versões da base:
+\begin{enumerate}
+  \item \textbf{Mais gente não reduz o prazo.} Com uma frente a mais em
+    todas as equipes, o prazo não muda. Com uma frente a menos, o prazo
+    não muda na versão com liberações e sobe no máximo 7 dias na versão
+    livre. Só a situação extrema de uma atividade por vez em cada equipe
+    é desastrosa (cerca de 614 dias).
+  \item \textbf{A alavanca é o tempo de emissão do projetista.} Emitir
+    10\% mais rápido reduz de 10 a 15 dias. Reduzir pela metade o tempo de
+    análise do cliente reduz de 2 a 6 dias, e um prazo máximo de cinco dias
+    para a análise reduz no máximo 4.
+  \item \textbf{O efeito depende de onde se age.} Na versão com liberações,
+    acelerar 20\% a arquitetura vale 10 dias, e acelerar 20\% interiores
+    vale zero, porque interiores sai da cadeia. Na versão livre, ocorre o
+    contrário. Uma redução fora da cadeia crítica não muda o prazo.
+\end{enumerate}
+
+\paragraph{Medidas pontuais na versão com liberações.}
+A Tabela~\ref{tab:medidas} testa medidas dirigidas à cadeia da
+Figura~\ref{fig:gantt}. Emitir em paralelo as zonas do AP final da
+arquitetura significa retirar os vínculos entre zonas consecutivas e dar
+a cada zona as mesmas predecessoras da primeira; isso só é válido quando a
+ordem entre as zonas não é técnica. Todas as medidas param em $-10$, porque
+a partir daí outra cadeia, de mesmo comprimento, passa a definir o prazo.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Medidas dirigidas à cadeia crítica, na versão com liberações
+  (variação sobre 285 dias; todos os valores são ótimos comprovados).}
+  \label{tab:medidas}
+  \small
+  \begin{tabular}{lrr}
+    \toprule
+    Medida & Prazo & Variação \\
+    \midrule
+    Mapas de esquadrias 10\% mais rápidos                & 280 &  $-5$ \\
+    Mapas de esquadrias 20\% mais rápidos                & 275 & $-10$ \\
+    Emissões de arquitetura e caixilhos 10\% mais rápidas & 275 & $-10$ \\
+    Zonas do AP final da arquitetura em paralelo          & 275 & $-10$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Na versão com largadas livres, as medidas equivalentes são emitir em
+paralelo as zonas do AP de interiores e de arquitetura e encurtar a
+revisão R01 de interiores, a emissão mais longa da cadeia (de 20 para 10
+dias). Isoladas, reduzem no máximo 4 dias; juntas, reduzem 8 (limite
+superior: 179 dias, com limite inferior de 178). A cadeia tem ainda uma
+análise de consultoria de 22 dias, que é uma janela de decisão do cliente
+específica deste empreendimento, e não uma revisão técnica. Ela não é
+tratada como medida: encurtá-la também para 10 dias levaria o pacote a
+15 dias, valor que serve apenas como limite superior do ganho. Acelerar
+20\% as emissões de arquitetura e interiores e limitar a análise do
+cliente a cinco dias reduz 26 dias.
+
+\subsection{Propostas de melhoria}
+\label{sec:propostas}
+
+Os cenários indicam onde uma melhoria vira prazo. As propostas abaixo
+partem desses resultados e do conhecimento do processo de projeto. Os
+efeitos citados são os dos cenários; as medidas em si não foram testadas
+no projeto real.
+
+\begin{enumerate}
+  \item \textbf{Liberar as disciplinas mais cedo.} É o ponto de maior peso:
+    a diferença entre 285 e 187 dias é a espera das disciplinas pela base
+    de arquitetura. Emitir essa base em pacotes, por torre ou por
+    conjunto de premissas fechadas, permitiria que as disciplinas
+    começassem pela primeira zona sem esperar a etapa inteira. Medir esse
+    efeito exige incluir no modelo o bloco do estudo preliminar, que hoje
+    está fora da base.
+  \item \textbf{Reduzir o tempo de emissão na cadeia crítica, e só nela.}
+    Na versão realista, a cadeia é de arquitetura e caixilhos. Padrões de
+    projeto, bibliotecas de famílias e geração automática de tabelas e
+    folhas no modelo BIM (por exemplo, o mapa de esquadrias extraído
+    direto do modelo) atacam essas emissões. Com um modelo bem padronizado,
+    já se observou na prática uma emissão de 7 dias cair para 3; como
+    hipótese conservadora, 10\% de redução nas emissões de arquitetura e
+    caixilhos reduz 10 dias. A mesma redução fora da cadeia não muda nada,
+    e por isso a escolha de onde padronizar deve seguir a análise de
+    folgas, e não ser aplicada de forma geral.
+  \item \textbf{Tratar as zonas como uma entrega única.} As emissões por
+    zona costumam ser separadas pelo volume de trabalho, e não por
+    dependência técnica. Com seis frentes de arquitetura disponíveis
+    (compatíveis com três torres e embasamento, duas torres em dois
+    setores), emitir as zonas em paralelo reduz 10 dias.
+  \item \textbf{Não começar pela ampliação de equipes.} Uma frente a mais
+    em todas as equipes não reduz o prazo. Pessoas a mais só ajudam se
+    forem usadas para encurtar atividades da cadeia crítica.
+  \item \textbf{Prazo máximo para a análise do cliente como complemento.}
+    Isolado, reduz no máximo 4 dias e, na versão realista, nada. Ganha
+    peso combinado com emissões mais curtas, quando as análises passam a
+    ocupar uma parte maior da cadeia.
+\end{enumerate}
 
 \subsection{Discussão e limitações}
-\preencher{Interpretar os ganhos e gargalos observados e relacioná-los às
-hipóteses e aos trabalhos discutidos. Explicar as limitações dos dados,
-da representação dos recursos e do método, delimitando o alcance das
-conclusões.}
+\label{sec:discussao}
+
+O resultado principal é que, com as mesmas atividades, durações, vínculos
+e equipes, a reordenação dos inícios reduz o prazo de 310 para 285 dias
+quando se respeitam as datas em que as disciplinas foram liberadas, e para
+187 dias no limite em que todas fossem liberadas no início. Nos dois casos,
+o prazo é definido pela sequência de entregas e análises, e não pela
+capacidade das equipes. A comparação entre os métodos mostra que a
+formulação indexada no tempo dá um limite inferior justo, mas o solver não
+encontra cronogramas bons nessa escala. Já a combinação de caminho crítico
+e esquema serial resolve a instância completa em menos de um segundo e
+prova a otimalidade, embora não tenha garantia de fazê-lo em geral, como
+mostra a instância pequena.
+
+\preencher{Relacionar estes resultados aos trabalhos discutidos na
+Seção~\ref{sec:literatura}: modelos indexados no tempo, regras de
+prioridade e esquema serial, e estudos aplicados a projetos de engenharia
+e software.}
+
+As principais limitações são:
+\begin{itemize}
+  \item \textbf{Cobertura da base.} O bloco do estudo preliminar ficou
+    fora da base, e 59 vínculos foram descartados na preparação, sem lista
+    individual. As datas de liberação substituem as predecessoras
+    ausentes, de forma conservadora. A conferência no original encontrou
+    também um vínculo ausente entre o R01 de estrutura e a compatibilização
+    final. Restaurado, ele eleva o limite com largadas livres de 187 para
+    196 dias e não altera o ótimo de 285 dias da versão com liberações.
+  \item \textbf{Capacidades estimadas} pelo pico do cronograma praticado.
+    Como a capacidade não está ativa no ótimo e $\pm1$ em todas as equipes
+    não muda o prazo na versão realista, a conclusão é pouco sensível a
+    esse erro de estimativa.
+  \item \textbf{Durações como dados.} Elas incluem pausas e não medem
+    esforço. As reduções percentuais são hipotéticas: não dizem quanto
+    custa nem se é possível obter cada redução.
+  \item \textbf{Calendário abstrato}, em dias úteis consecutivos, sem
+    feriados nem calendários por equipe.
+  \item \textbf{Convenção TI}: a sucessora pode começar no dia da entrega
+    da predecessora. A referência usa a mesma regra, mas os prazos em
+    dias dependem dela.
+  \item \textbf{Replanejamento a partir do zero}: o estudo compara
+    planejamentos e inclui atividades já executadas. Não é uma
+    reprogramação do projeto em andamento.
+\end{itemize}

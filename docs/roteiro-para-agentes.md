@@ -2,11 +2,42 @@
 
 Data de referência: 23/11/2026. Este arquivo acompanha `docs/roteiro-para-concluir-a-entrega.md`, destinado à leitura humana. As duas versões devem manter os mesmos fatos e pendências. Mostrar a versão humana por padrão.
 
-## 0. Atualização de 23/11/2026 (Henrique) — ler primeiro
+## 0A. Passagem de Henrique, 23/11/2026 noite — estado vigente, ler antes da seção 0
+
+Fatos verificados (rodada `resultados/sensibilidade-20261124T002034Z.json`, que substitui a de 191211Z e só acrescenta um cenário; reproduzir com `python codigo/sensibilidade.py`, ~40 s, sem CBC; 35 testes passando):
+
+- Duas versões da base completa, ambas com UB = LB (ótimo comprovado, validado por `verificar_solucao`):
+  - **com liberações** (27 atividades sem predecessora presas no `inicio_praticado`, via atividade fictícia `LIB_*` de duração r+1, sem papel, TI lag 0): **285** (−25; 8,1%). **Número realista para o artigo.** Justificativa: no R14 (fora do repo) essas atividades têm predecessoras no bloco do estudo preliminar, recolhido no PDF e ausente da base. Henrique confirmou que as disciplinas esperam a ARQ;
+  - **largadas livres:** **187** (−123; 39,7%). Limite da reordenação.
+- CBC: 307 (sem prova, gap 39,1%, 2.181 s). Só serve para comparar métodos. Instância pequena: CBC prova 45 em 1,4 s; SGS 45 com LB 44.
+- Capacidade não ativa nas duas versões (equipes ±1 = 0 na base de 285). Cadeia de 285: mapas de esquadrias T141–T144 → análise → CXO AP R00 → ARQ AP final por zona T255→T258 → análise.
+- Cenários na base de 285: emissão 10% = −15; ARQ 20% = −10; CXO 20% = −6; zonas T255–T258 em paralelo = −10; análise 50% = −2; SLA de 5 dias = 0.
+- **T026** (análise da consultoria, 22 dias): por decisão de Henrique em 23/11, **não é medida proposta**. É específica do empreendimento. Na base livre, o pacote "zonas ARI+ARQ em paralelo + T166 em 10 dias" dá ≤ 179 (−8, LB 178). Com T026 também em 10 dias dá 172 (−15), valor tratado só como limite superior. T026 não está na cadeia de 285.
+- **T244** (clash AP final): a espera de 31 dias no praticado é vínculo ausente (T231–T236 → T244), confirmado por Henrique: a compatibilização não toma esses dias. Restaurado, a base livre vai a 196 e a de 285 não muda. **Base não alterada** (decisão do grupo). A proposta "compatibilizar por zona" foi **retirada**.
+
+Estado do artigo (`relatorio/secoes/`):
+
+- **Escritas por Henrique:** 03, 04, 05 e 06. A seção 05 contém as tabelas `tab:metodos`, `tab:esperas`, `tab:largadas`, `tab:sensibilidade` e `tab:medidas`, as figuras `fig:prazos`, `fig:gantt` e `fig:curva`, e as subseções `sec:propostas` (5 propostas) e `sec:discussao`.
+- **Não compiladas:** a máquina de Henrique não tem LaTeX. `pacotes.tex` ganhou `pgfplots` e `algorithm`/`algpseudocode`. A estrutura (chaves, ambientes e refs) foi conferida por script.
+- **Pendentes:**
+  - 00 resumo, 01 introdução, 02 literatura (outro membro), 07 e `.bib`;
+  - o `\preencher` em `sec:discussao`;
+  - as citações ausentes para SGS "clássico", CBC/COIN-OR, PuLP e formulação indexada no tempo. Só usar fonte real conferida;
+  - a remoção de `relatorio/imagens/*.png` do template, a confirmar com o grupo.
+- **Slides** (`slides-finais/main.tex`): ainda a proposta. Gráficos prontos em `slides-finais/figuras/01..05-*.png`, gerados por `codigo/graficos_slides.py` a partir da rodada de sensibilidade mais recente. O script requer matplotlib, que está instalado no `.venv` de Henrique e não está em `requirements.txt`, porque o modelo não depende dele.
+
+Pendências de grupo, que não são decisões registradas:
+
+- apresentar 285 como realista e 187 como limite;
+- restaurar ou não o vínculo da T244.
+
+Nada disso foi registrado em `decisoes-do-trabalho.md`. Nada foi commitado.
+
+## 0. Atualização de 23/11/2026 (Henrique), parcialmente superada pela 0A
 
 Fato verificado: **ótimo da base completa = 187 dias**. `codigo/heuristica.py` (serial SGS com regras de prioridade e amostragem de semente fixa) produziu um cronograma de 187 dias aprovado por `verificar_solucao` (zero erros, H=310); 187 é o limite inferior do caminho crítico sem capacidades (o mesmo LB dos logs do CBC). UB = LB, logo gap zero. Ganho sobre a referência: 123 dias (39,7%). A rodada CBC de 307 dias continua válida como registro do desempenho do solver, não como melhor solução.
 
-Capacidade não ativa no ótimo: +1 em todas as equipes = 187. Cadeia crítica: 21 atividades, majoritariamente ARI (`PROJ-INT`/`ANL-PRODUTO`), terminando em LUM e CTV. 29 atividades com folga zero, 51 com folga ≤ 5 (26 ARI, 15 ARQ). Cenários, marginais e leitura prática: `docs/analise-sensibilidade.md`. Registro: `resultados/sensibilidade-20261123T131548Z.json` (inclui `inicios` do cronograma de 187). Reproduzir: `python codigo/sensibilidade.py` (~10 s, sem CBC). Testes: `codigo/testes/test_heuristica.py` (35 testes no total, todos passando). Onde as seções abaixo dizem "307" ou "187 ≤ z* ≤ 307", ler à luz desta atualização. Nenhuma decisão nova foi registrada em `decisoes-do-trabalho.md`: o uso do resultado no artigo deve ser combinado com o grupo.
+Capacidade não ativa no ótimo: +1 em todas as equipes = 187. Cadeia crítica: 21 atividades, majoritariamente ARI (`PROJ-INT`/`ANL-PRODUTO`), terminando em LUM e CTV. 29 atividades com folga zero, 51 com folga ≤ 5 (26 ARI, 15 ARQ). Cenários, marginais e leitura prática: `docs/analise-sensibilidade.md`. Registro: `resultados/sensibilidade-20261123T131548Z.json` (inclui `inicios` do cronograma de 187). Reproduzir: `python codigo/sensibilidade.py` (~40 s, sem CBC). Rodada mais recente, com seções 4A–4E (esperas do praticado, largadas tardias: 27 presas na data praticada = 285 comprovado, logo ganho entre 25 e 123 dias; base com liberações 285 confirmada no R14 como a mais realista, seção 4F; segunda cadeia ARQ AP com LB 183; medidas pontuais e combinações; CBC na pequena = 45 comprovado): `resultados/sensibilidade-20261124T002034Z.json`. Perguntas abertas de processo: seção 6.1. Testes: `codigo/testes/test_heuristica.py` (35 testes no total, todos passando). Onde as seções abaixo dizem "307" ou "187 ≤ z* ≤ 307", ler à luz desta atualização. Nenhuma decisão nova foi registrada em `decisoes-do-trabalho.md`: o uso do resultado no artigo deve ser combinado com o grupo.
 
 ## 1. Mandato e limites de atuação
 
