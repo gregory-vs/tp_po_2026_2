@@ -30,7 +30,8 @@ dependências e equipes, quanto o prazo total pode cair apenas com a escolha
 dos dias de início?} Um cronograma com essas características é uma
 instância do problema de sequenciamento de projetos com restrição de
 recursos (RCPSP, do inglês \emph{resource-constrained project scheduling
-problem}), em que se minimiza o prazo de conclusão (\emph{makespan}).
+problem}), em que se minimiza o prazo de conclusão (\emph{makespan}) sob
+restrições de precedência e capacidade~\cite{ding2023extensions,kongdou2020}.
 
 \paragraph{Fonte e preparação dos dados.}
 Os dados vêm da revisão R14 do cronograma do empreendimento, anonimizada
@@ -138,7 +139,9 @@ ocupa os dias 2, 3 e 4 e é entregue no dia 4.
 \subsection{Formulação matemática}
 \label{sec:formulacao}
 
-A formulação é uma programação linear inteira mista indexada no tempo:
+A formulação é uma programação linear inteira mista indexada no tempo,
+abordagem usual para representar os inícios por variáveis binárias
+associadas aos períodos~\cite{artigues2017}:
 \begin{align}
   \min\quad & C_{\max}
     \label{eq:objetivo}\\

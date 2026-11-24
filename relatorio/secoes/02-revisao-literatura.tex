@@ -3,15 +3,78 @@
 \section{Revisão da literatura}
 \label{sec:literatura}
 
-\preencher{Situar o estudo na literatura de sequenciamento de projetos com
-restrições de recursos (RCPSP). Apresentar os conceitos necessários para
-entender o modelo e citar as fontes efetivamente consultadas.}
+No problema de sequenciamento de projetos com restrições de recursos
+(RCPSP), busca-se determinar os inícios das atividades de forma a minimizar
+o prazo de conclusão, respeitando as precedências e a disponibilidade de
+recursos. Ding, Zhuang e Liu~\cite{ding2023extensions} revisam extensões
+desse problema, organizadas segundo objetivos, restrições, características
+das atividades e métodos de solução. Os autores mostram que as hipóteses
+do RCPSP clássico nem sempre representam as condições encontradas em
+projetos reais, o que motiva a incorporação de calendários, diferentes
+relações de precedência e outras particularidades. Essa revisão ajuda a
+situar nosso estudo, que considera durações fixas e limita a quantidade de
+atividades abertas simultaneamente por equipe.
 
-\preencher{Comparar os trabalhos relacionados por objetivo, decisões,
-precedências, representação dos recursos e método de solução. Usar
-\texttt{docs/referencias-comentadas.md} como apoio à seleção das fontes,
-conferindo os artigos originais antes de redigir as citações.}
+Artigues~\cite{artigues2017} analisa a força das formulações de programação
+inteira indexadas no tempo para o RCPSP. O autor demonstra que algumas
+formulações apresentadas como novas são equivalentes ou mais fracas que
+formulações já conhecidas, considerando a qualidade de suas relaxações
+lineares. A referência é pertinente ao nosso modelo, que utiliza variáveis
+binárias associadas aos possíveis dias de início das atividades. Seu estudo
+também indica que a avaliação de uma formulação deve considerar não apenas
+a quantidade de variáveis e restrições, mas a força dos limites produzidos
+pela relaxação. Neste trabalho, a formulação indexada no tempo é utilizada
+para representar as decisões de início e as restrições do cronograma,
+enquanto seu desempenho é avaliado na instância estudada.
 
-\preencher{Explicar quais hipóteses e métodos são próximos deste estudo,
-quais diferem e qual contribuição o artigo pretende oferecer. Organizar a
-revisão como uma síntese crítica, conectando os trabalhos ao problema.}
+Kong e Dou~\cite{kongdou2020} investigam uma extensão do RCPSP com relações
+de precedência combinadas e calendários de recursos, contemplando
+atividades interrompíveis e não interrompíveis. Os autores propõem uma
+representação em rede e um algoritmo genético adaptado, denominado GA-NND.
+Nos experimentos apresentados, essa abordagem obteve melhores resultados
+de qualidade e tempo que o algoritmo genético tradicional utilizado na
+comparação. A proximidade com nosso estudo está na representação das
+dependências e na consideração conjunta de prazo e recursos. Entretanto,
+as relações combinadas dos autores são mais abrangentes que a simples
+presença dos quatro tipos de vínculo. Nosso modelo também não representa
+calendários individuais das equipes nem decide interrupções das atividades.
+
+No contexto de projetos de software, Colares~\cite{colares2010} aborda a
+alocação de equipes e a construção de cronogramas considerando produtividade
+e múltiplos objetivos, com solução pelo algoritmo NSGA-II. A dissertação
+apresenta resultados favoráveis quanto à qualidade dos planejamentos, mas
+o experimento empírico não permitiu demonstrar ganho de produtividade
+atribuível à abordagem. O trabalho contribui para discutir a relação entre
+recursos, dependências e prazo, além de exemplificar a avaliação de uma
+ferramenta de apoio ao planejamento. Diferentemente dessa proposta, nosso
+estudo mantém as equipes responsáveis e as durações como parâmetros,
+concentrando a decisão nos inícios das atividades e na minimização do prazo
+total.
+
+Para a construção de cronogramas, Kolisch~\cite{kolisch1996} compara os
+esquemas serial e paralelo de geração de cronogramas no RCPSP clássico. O
+estudo mostra que a amostragem melhora significativamente o desempenho de
+uma aplicação única e que o esquema paralelo não pode ser considerado
+superior em todas as condições. Esses resultados fundamentam o uso de
+diferentes regras de prioridade e de amostras na busca por cronogramas de
+menor prazo. O presente estudo utiliza o esquema serial, adaptado às
+relações de precedência e à convenção de entrega adotadas na base.
+
+O método do caminho crítico, cuja fundamentação matemática é apresentada
+por Kelley~\cite{kelley1961}, permite analisar o prazo imposto pelas
+durações e pelas relações de precedência. Quando aplicado sem as
+restrições de capacidade, fornece um limite inferior para o problema com
+recursos limitados. Esse limite não garante, por si só, um cronograma
+viável para as equipes disponíveis. Sua combinação com um método
+construtivo permite avaliar a qualidade da solução: quando um cronograma
+viável atinge o limite inferior, a otimalidade fica comprovada para as
+hipóteses consideradas.
+
+Em conjunto, essas referências fundamentam a formulação indexada no tempo,
+a análise das precedências e a construção de cronogramas por regras de
+prioridade. Nosso estudo aplica esses componentes à coordenação de projetos
+de arquitetura e engenharia, mantendo atividades, durações e equipes
+previamente definidas. A contribuição está na modelagem e na avaliação do
+caso, considerando suas convenções de duração, capacidade e liberação das
+atividades. Os resultados computacionais e as limitações dessas escolhas
+são discutidos na Seção~\ref{sec:resultados}.

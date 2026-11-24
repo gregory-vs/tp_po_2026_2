@@ -3,13 +3,10 @@
 \section{Introdução}
 \label{sec:introducao}
 
-\preencher{Contextualizar a coordenação dos projetos de arquitetura e
-engenharia e explicar como as dependências entre atividades e a capacidade
-das equipes afetam o prazo de conclusão.}
+O desenvolvimento de um empreendimento de arquitetura e engenharia encadeia emissões de projeto, análises e revisões entre disciplinas, cliente e equipes de coordenação. As relações entre essas atividades podem impor esperas, enquanto a disponibilidade das equipes limita quantas frentes podem avançar simultaneamente. Coordenar as precedências e os recursos é, portanto, parte central do planejamento do prazo. Esse tipo de problema pertence à família do sequenciamento de projetos com restrições de recursos (RCPSP, do inglês *resource-constrained project scheduling problem*), que busca determinar um cronograma que minimize o prazo de conclusão sem violar as dependências nem as capacidades disponíveis \cite{ding2023extensions}.
 
-\preencher{Delimitar a pergunta de pesquisa e o objetivo do artigo.
-Explicitar a contribuição em relação ao planejamento praticado e o escopo
-do estudo, apoiando as afirmações gerais em referências.}
+A pergunta de pesquisa é: mantendo atividades, durações, equipes e vínculos da base, quanto o prazo pode cair apenas pela escolha dos dias de início? A comparação parte de uma referência normalizada de 310 dias úteis e distingue duas condições para as atividades sem predecessoras: largadas livres e datas de liberação preservadas como limites mínimos para os inícios. Esta segunda condição incorpora ao modelo as datas observadas para representar esperas associadas a predecessoras ausentes do recorte; não valida essas datas como previsão do prazo real. A primeira condição mostra o limite inferior imposto pelas precedências na base sem liberações. O estudo contribui com uma formulação matemática e uma heurística construtiva, além da verificação independente dos cronogramas principais. A análise refaz o planejamento desde o início, inclusive para tarefas já executadas, e não estima o prazo civil do empreendimento nem reprograma sua execução em curso.
 
-\preencher{Encerrar com uma apresentação breve da organização do artigo,
-remetendo às Seções~\ref{sec:literatura} a~\ref{sec:conclusoes}.}
+O modelo inteiro é útil para formalizar as decisões e produzir limites, mas, na instância completa, a busca do CBC terminou após cerca de 36 minutos com uma solução de 307 dias e sem prova de ótimo. Esse resultado, distante do limite inferior de 187 dias, não respondia com precisão suficiente à pergunta sobre o prazo possível. Por isso, o estudo complementa a formulação com métodos de caminho crítico e uma heurística construtiva do RCPSP. A heurística produziu cronogramas viáveis que atingem o limite inferior nas duas condições de liberação, permitindo provar os ótimos de 285 e 187 dias, respectivamente. A motivação e o papel complementar desses métodos são detalhados nas Seções~\ref{sec:literatura} e~\ref{sec:algoritmo}.
+
+As Seções~\ref{sec:literatura} a~\ref{sec:conclusoes} apresentam os trabalhos relacionados, a delimitação e a formulação, os métodos de solução, os resultados nas duas condições de liberação, as limitações e as conclusões.
