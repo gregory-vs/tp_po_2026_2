@@ -8,7 +8,7 @@
 
 \paragraph{Instâncias.}
 Foram usadas duas instâncias. A \emph{pequena}, com 12 atividades,
-24 vínculos e 9 equipes que é um exemplo montado à mão com o objetivo de conferir o modelo
+24 vínculos e 9 equipes, que é um exemplo montado à mão com o objetivo de conferir o modelo
 e comparar os métodos. A \emph{completa} é a base real descrita na
 Seção~\ref{sec:contexto}, com 243 atividades.
 
@@ -29,18 +29,18 @@ tratamento das atividades sem predecessora:
 \paragraph{Métricas.}
 Para cada execução são registrados o prazo do melhor cronograma viável
 (UB), o limite inferior (LB), o gap $(\text{UB}-\text{LB})/\text{UB}$, o
-tempo de execução e a situação, sendo ela ótimo comprovado ($\text{UB}=\text{LB}$)
+tempo de execução e a situação, que pode ser de ótimo comprovado ($\text{UB}=\text{LB}$)
 ou viável sem prova. A referência central é o cronograma praticado, de 310 dias.
 
 \paragraph{Cenários.}
-A análise de sensibilidade funciona de duas maneiras, ou alterando um parâmetro por vez, ou uma combinação
-deles, recalculando e resolvendo os cenários com a capacidade das equipes ($\pm1$ em todas, $-1$ em
+A análise de sensibilidade funciona de duas maneiras: alterando um parâmetro por vez ou uma combinação
+deles. Os cenários são recalculados e resolvidos considerando a capacidade das equipes ($\pm1$ em todas, $-1$ em
 cada uma, capacidade 1 em todas), as durações por tipo de atividade (emissão,
 análise ou todas, com reduções de 10\%, 20\%, 30\% e 50\%, arredondadas
 para cima e com mínimo de um dia), prazo máximo de análise do cliente e
 redução de 20\% por disciplina e medidas pontuais nas cadeias críticas. Em
 programação inteira, os multiplicadores da relaxação linear não produzem o
-efeito exato da mudança de um parâmetro, por isso, o efeito é medido
+efeito exato da mudança de um parâmetro; por isso, o efeito é medido
 resolvendo cada cenário de novo, e não pelos preços-sombra.
 
 \paragraph{Ambiente.}
@@ -106,8 +106,8 @@ Figura~\ref{fig:prazos} resume os prazos da instância completa.
 
 \paragraph{Instância pequena.}
 Nela, a capacidade das equipes limita o prazo, ou seja, o caminho crítico sem
-equipes produziria um resultado de 44 dias, todavia o ótimo comprovado pelo CBC é de 45. A
-heurística encontra o cronograma de 45 dias, entretanto não consegue provar a
+equipes produziria um resultado de 44 dias; todavia, o ótimo comprovado pelo CBC é de 45. A
+heurística encontra o cronograma de 45 dias; entretanto, não consegue provar a
 otimalidade, pois fica um dia acima do seu limite inferior.
 
 \paragraph{Instância completa, CBC.}
@@ -116,17 +116,17 @@ raiz gerou 187 dias em cerca de 3 segundos, e esse limite inferior não
 mudou até o fim da execução. Além disso, o solver passou cerca de 566 segundos no nó raiz, com
 cortes e heurísticas internas, explorou 823 nós e encontrou apenas duas
 melhorias, de 308 e 307 dias, respectivamente, antes de parar pelo tempo. Assim, podemos afirmar que o limite estava
-correto desde o início e portanto, o problema central foi a dificuldade de encontrar um cronograma eficiente
+correto desde o início e, portanto, o problema central foi a dificuldade de encontrar um cronograma eficiente
 dentro de uma formulação com 72.381 variáveis binárias.
 
 \paragraph{Instância completa, heurística.}
 Na versão com largadas livres, o SGS encontrou um cronograma de 187 dias que corresponde ao limite inferior. Dessa forma, podemos afirmar que é o ótimo da formulação, com uma redução de 123 dias (39,7\%) em relação à referência inicial. Na versão com liberações, o
-ótimo comprovado é de 285 dias, com uma redução de 25 dias (8,1\%). Assim, ds dois
+ótimo comprovado é de 285 dias, com uma redução de 25 dias (8,1\%). Assim, os dois
 cronogramas foram aprovados pelo verificador independente.
 
-Os dois métodos se completam uma vez que na instância pequena, o cronograma SGS de
-45 dias tem LB de 44 não sendo capaz de chegar a otimalidade, mas com o auxilio do CBC ele é capaz de comprovar os 45
-dias garantindo otimalidade. Na completa, embora as equipes atinjam suas capacidades em alguns
+Os dois métodos se completam, uma vez que, na instância pequena, o cronograma SGS de
+45 dias tem LB de 44, não sendo capaz de chegar à otimalidade; mas, com o auxílio do CBC, é possível comprovar os 45
+dias, garantindo a otimalidade. Na completa, embora as equipes atinjam suas capacidades em alguns
 períodos, os cronogramas SGS atingem os limites do CPM rapidamente (menos de um segundo), enquanto o CBC tem dificuldade e é incapaz de concluir a prova em 36 minutos.
 
 \subsection{De onde vem o ganho}
@@ -136,12 +136,12 @@ períodos, os cronogramas SGS atingem os limites do CPM rapidamente (menos de um
 Para cada atividade do praticado, define-se a \emph{espera} como a
 diferença entre o início praticado e o menor início que os vínculos
 permitiriam, dadas as datas praticadas das predecessoras. A
-Tabela~\ref{tab:esperas} por sua vez, mostra o caminho que determina os 310 dias.
-Dos dias contidos nesse caminho temos que 132 aparecem como espera, onde 75 estão na largada, antes da
+Tabela~\ref{tab:esperas}, por sua vez, mostra o caminho que determina os 310 dias.
+Dos dias contidos nesse caminho, temos que 132 aparecem como espera; 75 estão na largada, antes da
 primeira emissão, e 31 antes da compatibilização final. Em relação aos 31 dias da
-compatibilização podemos afirmar que eles são um efeito da base em vez de uma espera real. Considerando o cronograma original, a compatibilização depende de todo o R01 de
+compatibilização, podemos afirmar que eles são um efeito da base, em vez de uma espera real. Considerando o cronograma original, a compatibilização depende de todo o R01 de
 estrutura do AP e, no praticado, começa logo depois da análise do R01 de
-estrutura da última zona. Na base, temos que apenas a primeira zona ficou ligada a ela e com esse vínculo restaurado o efeito é a queda da espera para 1 dia, e a espera real do
+estrutura da última zona. Na base, temos que apenas a primeira zona ficou ligada a ela. Com esse vínculo restaurado, o efeito é a queda da espera para 1 dia, e a espera real do
 caminho fica em 102 dias, dos quais 75 estão na largada.
 
 \begin{table}[htbp]
@@ -176,11 +176,11 @@ caminho fica em 102 dias, dos quais 75 estão na largada.
 
 \paragraph{Largadas tardias.}
 \label{sec:largadas}
-O maior bloco de espera está nas atividades sem predecessora onde no
-praticado temos 27 delas começando depois do dia zero. Impondo , uma de cada vez,
-que cada atividade não comece antes da sua data praticada temos a medida do quanto o
+O maior bloco de espera está nas atividades sem predecessora, das quais
+27 começaram depois do dia zero no cronograma praticado. Impondo, uma de cada vez,
+que cada atividade não comece antes da sua data praticada, temos a medida do quanto
 o limite inferior (Tabela~\ref{tab:largadas}) sobe. As que mais pesam são os mapas de
-esquadrias de arquitetura das três torres e do embasamento uma vez que somente eles são suficientes para levar o prazo de 187 para 285 dias.
+esquadrias de arquitetura das três torres e do embasamento, uma vez que somente eles são suficientes para levar o prazo de 187 para 285 dias.
 
 \begin{table}[htbp]
   \centering
@@ -207,11 +207,11 @@ esquadrias de arquitetura das três torres e do embasamento uma vez que somente 
   \end{tabularx}
 \end{table}
 
-A conferência no cronograma original explica essas esperas onde na revisão
+A conferência no cronograma original explica essas esperas: na revisão
 R14, as emissões do AP de fundação, contenção, PCI, elétrica, gás,
 climatização e acústica, assim como os mapas de esquadrias, têm
 predecessoras dentro do bloco do estudo preliminar. Esse bloco está
-recolhido no documento de origem e, por isso, não entrou na base. É necessário observar, também, que a base
+recolhido no documento de origem e, por isso, não entrou na base. É necessário observar também que a base
 não tem nenhuma atividade de arquitetura antes do dia 75. Dessa forma, podemos afirmar que as largadas
 tardias são, em grande parte, a espera das disciplinas pela arquitetura,
 o que é coerente com o processo descrito na Seção~\ref{sec:contexto}, e
@@ -221,8 +221,8 @@ Na variante \emph{com liberações}, impor que as 27 atividades não comecem
 antes das datas preservadas resulta em um prazo ótimo de 285 dias, ou seja, 25 dias
 (8,1\%) abaixo da referência. Todavia, esse é um ótimo condicionado às liberações
 adotadas e não uma previsão validada da duração real. Se considerarmos largadas livres,
-o ótimo é 187 dias para a base sem essas restrições e a diferença de 98 dias
-é o efeito conjunto da imposição das liberações no modelo. O que não corresponde
+o ótimo é 187 dias para a base sem essas restrições, e a diferença de 98 dias
+é o efeito conjunto da imposição das liberações no modelo, o que não corresponde
 automaticamente à duração do estudo preliminar ausente.
 
 \subsection{O que limita o prazo}
@@ -234,16 +234,16 @@ pelo menos um período. Portanto, as restrições de capacidade podem estar
 ativas em dias específicos, embora o prazo ótimo coincida com o limite
 inferior calculado sem capacidades (187 e 285 dias). Assim, aumentar todas as
 capacidades em uma unidade não reduz o prazo nessas variantes
-(Tabela~\ref{tab:sensibilidade}), isto é, temos que as capacidades atuais permitem atingir
+(Tabela~\ref{tab:sensibilidade}); isto é, as capacidades atuais permitem atingir
 o limite imposto pelas precedências, mas não determinam o makespan ótimo.
 
 \paragraph{Cadeia na versão com liberações.}
-A Figura~\ref{fig:gantt} mostra a cadeia de 285 dias reproduzindo o ciclo
-do AP descrito na Seção~\ref{sec:contexto} onde os mapas de esquadrias são
-liberados no dia 120 e analisados. Temos dentro deles os caixilhos emitindo o seu AP,a
-arquitetura emitindo o AP de cada torre e seu embasamento de forma sequencial
+A Figura~\ref{fig:gantt} mostra a cadeia de 285 dias, reproduzindo o ciclo
+do AP descrito na Seção~\ref{sec:contexto}, em que os mapas de esquadrias são
+liberados no dia 120 e analisados. Nela, temos os caixilhos emitindo o seu AP e a
+arquitetura emitindo o AP de cada torre e de seu embasamento de forma sequencial,
 após receber as disciplinas. Dessa forma, podemos afirmar que somente a arquitetura e os caixilhos estão
-na cadeia e temos são 14 atividades com folga zero.
+na cadeia, que contém 14 atividades com folga zero.
 
 \begin{figure}[htbp]
   \centering
@@ -280,10 +280,10 @@ na cadeia e temos são 14 atividades com folga zero.
 \paragraph{Cadeia na versão com largadas livres.}
 Sem as liberações, a cadeia de 187 dias passa por 21 atividades, quase
 todas de interiores. Assim, temos as emissões do projetista intercaladas com análises do
-cliente, os conceito ao AP, terminando no luminotécnico e na consultoria
-ambiental. Logo em seguida temos uma segunda cadeia, de arquitetura do AP, com
-183 dias e dados os resultados, podemos inferir que nessa versão, uma medida que encurte só interiores
-rende no máximo 4 dias que é justamente a cadeia assumida pela arquitetura.
+cliente, do conceito ao AP, terminando no luminotécnico e na consultoria
+ambiental. Logo em seguida, temos uma segunda cadeia, de arquitetura do AP, com
+183 dias. Dados os resultados, podemos inferir que, nessa versão, uma medida que encurte só interiores
+rende no máximo 4 dias, que é justamente o prazo da cadeia assumida pela arquitetura.
 
 \subsection{Análise de sensibilidade}
 \label{sec:sensibilidade}
@@ -362,23 +362,23 @@ Três resultados aparecem nas duas versões da base:
 \begin{enumerate}
   \item \textbf{A capacidade adicional não reduz o prazo encontrado.} Considerando
     uma unidade a mais de capacidade em todas as equipes, os prazos ótimos
-    das duas variantes não mudam mesmo no cenário extremo de capacidade 1 por
-    equipe. Ainda sim, o SGS encontra um cronograma de 614 dias e não é capaz de provar que esse seja o mínimo necessário, ou seja, não tem garantia de otimalidade. Alterar a capacidade do
-    modelo representa permitir mais atividades simultâneas, todavia isso não significa um aumento da produtividade nem em contratação de pessoas.
+    das duas variantes não mudam, mesmo no cenário extremo de capacidade 1 por
+    equipe. Ainda assim, o SGS encontra um cronograma de 614 dias e não é capaz de provar que esse seja o mínimo necessário; ou seja, não tem garantia de otimalidade. Alterar a capacidade do
+    modelo representa permitir mais atividades simultâneas; todavia, isso não significa um aumento da produtividade nem a contratação de pessoas.
   \item \textbf{A alavanca é o tempo de emissão do projetista.} Emitir
-    10\% mais rápido reduz de 10 a 15 dias enquanto que reduzir pela metade o tempo de
-    análise do cliente reduz apenas de 2 a 6 dias, por fim um prazo máximo de cinco dias
-    para a análise reduz no máximo 4. A partir disso podemos deduzir que o tempo de emissão do projetista é uma variável crítica uma vez que é a que possui maior impacto no numero de dias reduzidos.
+    10\% mais rápido reduz de 10 a 15 dias, enquanto reduzir pela metade o tempo de
+    análise do cliente reduz de 2 a 6 dias. Por fim, um prazo máximo de cinco dias
+    para a análise reduz no máximo 4. A partir disso, podemos deduzir que o tempo de emissão do projetista é uma variável crítica, uma vez que é a que possui maior impacto no número de dias reduzidos.
   \item \textbf{O efeito depende de onde se age.} Na versão com liberações,
-    acelerar 20\% a arquitetura vale 10 dias enquanto que acelerar 20\% interiores
-    vale zero, uma vez que interiores sai da cadeia e  na versão livre, ocorre o
+    acelerar 20\% a arquitetura vale 10 dias, enquanto acelerar 20\% interiores
+    vale zero, uma vez que as atividades de interiores saem da cadeia; na versão livre, ocorre o
     contrário. Assim, concluímos que uma redução fora da cadeia crítica não muda o prazo.
 \end{enumerate}
 
 \paragraph{Medidas pontuais na versão com liberações.}
 A Tabela~\ref{tab:medidas} testa medidas dirigidas à cadeia da
-Figura~\ref{fig:gantt}.Ao emitir em paralelo as zonas do AP final da
-arquitetura os vínculos entre zonas consecutivas são retirados e cada zona recebe as mesmas predecessoras da primeira. Tal operação é válida somente quando a ordem entre as zonas não é técnica. Podemos observar na tabela que todas as medidas param em $-10$, pois a partir desse ponto se inicia outra cadeia, de mesmo comprimento que passa a definir o prazo.
+Figura~\ref{fig:gantt}. Ao emitir em paralelo as zonas do AP final da
+arquitetura, os vínculos entre zonas consecutivas são retirados e cada zona recebe as mesmas predecessoras da primeira. Tal operação é válida somente quando a ordem entre as zonas não é técnica. Podemos observar na tabela que todas as medidas param em $-10$, pois, a partir desse ponto, se inicia outra cadeia, de mesmo comprimento, que passa a definir o prazo.
 
 \begin{table}[htbp]
   \centering
@@ -400,13 +400,13 @@ arquitetura os vínculos entre zonas consecutivas são retirados e cada zona rec
 
 Na versão com largadas livres, as medidas equivalentes são emitir em
 paralelo as zonas do AP de interiores e de arquitetura e encurtar a
-revisão R01 de interiores que é a emissão mais longa da cadeia (de 20 para 10
-dias). Isoladas elas reduzem no máximo 4 dias mas juntas elas conseguem reduzir até 8 (limite
+revisão R01 de interiores, que é a emissão mais longa da cadeia (de 20 para 10
+dias). Isoladas, elas reduzem no máximo 4 dias, mas, juntas, conseguem reduzir até 8 (limite
 superior: 179 dias, com limite inferior de 178). A cadeia tem ainda uma
 análise de consultoria de 22 dias, que é uma janela de decisão do cliente
 específica deste empreendimento, e não uma revisão técnica. Como essa janela não é
 tratada como medida, o ato de encurtá-la também para 10 dias levaria o pacote a
-15 dias que é o valor de limite superior do ganho. Podemos deduzir também que acelerar
+15 dias, que é o limite superior do ganho. Podemos deduzir também que acelerar
 20\% as emissões de arquitetura e interiores e limitar a análise do
 cliente a cinco dias reduz 26 dias de prazo.
 
@@ -415,7 +415,7 @@ cliente a cinco dias reduz 26 dias de prazo.
 
 Os cenários indicam onde uma melhoria é convertida em ganho no prazo. As propostas abaixo
 partem desses resultados e do conhecimento do processo de projeto. Os
-efeitos citados são os dos cenários simulados uma vez que as medidas em si não foram testadas
+efeitos citados são os dos cenários simulados, uma vez que as medidas em si não foram testadas
 no projeto real.
 
 \begin{enumerate}
@@ -428,56 +428,56 @@ no projeto real.
     efeito exige incluir no modelo o bloco do estudo preliminar, que hoje
     está fora da base.
   \item \textbf{Reduzir o tempo de emissão somente na cadeia crítica.}
-    Na variante com liberações, a cadeia é de arquitetura e caixilhos então os padrões de
+    Na variante com liberações, a cadeia é de arquitetura e caixilhos; então, os padrões de
     projeto, bibliotecas de famílias e geração automática de tabelas e
     folhas no modelo BIM (por exemplo, o mapa de esquadrias extraído
     direto do modelo) atacam essas emissões. Considerando um modelo bem padronizado,
-    foi possível observar na prática uma emissão de 7 dias cair para 3 trabalhando com uma hipótese conservadora. Outra maneira de visualizar é o fato de 10\% de redução nas emissões de arquitetura e caixilhos produz uma redução final de 10 dias, todavia a mesma redução fora da cadeia não muda nada, e por isso a escolha de onde padronizar deve seguir a análise de
+    foi possível observar, na prática, que uma emissão de 7 dias caiu para 3, considerando uma hipótese conservadora. Outra maneira de visualizar é o fato de que uma redução de 10\% nas emissões de arquitetura e caixilhos produz uma redução final de 10 dias; todavia, a mesma redução fora da cadeia não muda nada, e, por isso, a escolha de onde padronizar deve seguir a análise de
     folgas, e não ser aplicada de forma geral.
   \item \textbf{Avaliar a execução paralela por zonas.} As emissões por
     zona podem ser separadas pelo volume de trabalho sem dependência
     técnica entre elas. No cenário modelado, permitir as emissões das zonas
-    do AP final em paralelo gera uma redução de 10 dias o que configura uma alteração de
-    precedências e capacidade de atividades simultâneas mas não uma medida
+    do AP final em paralelo gera uma redução de 10 dias, o que configura uma alteração de
+    precedências e capacidade de atividades simultâneas, mas não uma medida
     direta de contratação ou produtividade.
   \item \textbf{Interpretar capacidade como simultaneidade.} É fato que uma unidade
-    adicional permite mais atividades abertas em paralelo, entretanto o resultado de
+    adicional permite mais atividades abertas em paralelo; entretanto, o resultado de
     prazo invariável ao aumentar todas as capacidades não permite concluir
     diretamente sobre o efeito de contratar mais pessoas.
-  \item \textbf{Prazo máximo para a análise do cliente como complemento.} Ao ser analisado isoladamente reduz no máximo 4 dias e, na variante com liberações não gera redução, todavia ganha peso ao ser combinado com emissões mais curtas, quando as análises passam a ocupar uma parte maior da cadeia.
+  \item \textbf{Prazo máximo para a análise do cliente como complemento.} Ao ser analisado isoladamente, reduz no máximo 4 dias e, na variante com liberações, não gera redução; todavia, ganha peso ao ser combinado com emissões mais curtas, quando as análises passam a ocupar uma parte maior da cadeia.
 \end{enumerate}
 
 \subsection{Discussão e limitações}
 \label{sec:discussao}
 
-O resultado principal é obtido ao considerar que com as mesmas atividades, durações, vínculos
+O resultado principal é obtido ao considerar que, com as mesmas atividades, durações, vínculos
 e equipes, a reordenação dos inícios reduz o prazo de 310 para 285 dias
 quando se impõem as datas preservadas como liberações mínimas, e para 187
-dias na variante sem essas restrições, entretanto é importante notar que esses são ótimos condicionados às
-respectivas hipóteses, e não previsões da duração real do empreendimento.
-A diferença entre os prazos mede o efeito de impor as liberações, ou seja, não é possível atribuir diretamente à duração do estudo preliminar ausente. Outro fator relevante é o fato de que as 39 equipes atingem suas capacidades em pelo menos um período nos dois
+dias na variante sem essas restrições. Entretanto, é importante notar que esses são ótimos condicionados às
+respectivas hipóteses e não previsões da duração real do empreendimento.
+A diferença entre os prazos mede o efeito de impor as liberações, ou seja, não é possível atribuí-la diretamente à duração do estudo preliminar ausente. Outro fator relevante é o fato de que as 39 equipes atingem suas capacidades em pelo menos um período nos dois
 cronogramas principais, mas as capacidades adotadas permitem que o SGS
-atinja os limites de precedência. A comparação entre os métodos mostra que a formulação indexada no tempo fornece um limite inferior justo, todavia o experimento não sustenta uma conclusão geral sobre essa escala. É importante afirmar que, nessa execução  o CBC encontrou um cronograma de 307 dias e não comprovou a otimalidade no tempo disponível e a combinação CPM e SGS atingiu o limite inferior nas duas variantes completas analisadas. Por outro lado, a combinação de caminho crítico
-e esquema serial resolve a instância completa muito rapidamente ( menos de um segundo) e
+atinja os limites de precedência. A comparação entre os métodos mostra que a formulação indexada no tempo fornece um limite inferior justo; todavia, o experimento não sustenta uma conclusão geral sobre essa escala. É importante afirmar que, nessa execução, o CBC encontrou um cronograma de 307 dias e não comprovou a otimalidade no tempo disponível, enquanto a combinação CPM e SGS atingiu o limite inferior nas duas variantes completas analisadas. Por outro lado, a combinação de caminho crítico
+e esquema serial resolve a instância completa muito rapidamente (menos de um segundo) e
 prova a otimalidade, embora não tenha garantia de fazê-lo em geral, como
 mostra a instância pequena.
 
 Esses resultados mostram por que os dois métodos foram necessários. A
 formulação indexada no tempo representa explicitamente cada início, mas
-seu número de variáveis cresce com o horizonte e na instância completa, o
+seu número de variáveis cresce com o horizonte e, na instância completa, o
 CBC obteve LB de 187 dias e uma solução de 307, sem fechar o intervalo em
 36 minutos. A literatura analisa a força e o custo dessas formulações
 para o RCPSP~\cite{artigues2017}. O SGS, por outro lado, constrói
 cronogramas viáveis por regras de prioridade, cuja amostragem é estudada
 por Kolisch~\cite{kolisch1996}. Aqui, a igualdade entre o limite inferior
 do CPM e o prazo do SGS provou os ótimos de 187 dias com largadas livres e
-285 dias com liberações, entretanto é necessário reiterar que essa é uma prova por limites, não uma alegação de
+285 dias com liberações; entretanto, é necessário reiterar que essa é uma prova por limites, não uma alegação de
 que a heurística seja exata em geral. A abordagem se aproxima dos modelos
 de projetos de construção de Kong e Dou~\cite{kongdou2020} pelas relações
 de precedência, mas mantém capacidades e durações fixas. Também difere de
 aplicações em software que decidem alocação de equipes e produtividade
-\cite{colares2010} onde neste caso, equipes e atividades estão
-definidas a priori, e a decisão é o início temporal. Por fim podemos concluir que o resultado de 285 dias é
+\cite{colares2010}; neste caso, equipes e atividades estão
+definidas a priori, e a decisão é o início temporal. Por fim, podemos concluir que o resultado de 285 dias é
 condicionado às liberações adotadas e o resultado de 187 dias é o ótimo da variante sem
 liberações, para a base tal como modelada.
 
@@ -489,7 +489,7 @@ As principais limitações são:
     datas observadas, como aproximação para predecessoras ausentes. A
     conferência no original também identificou um vínculo TI de lag zero
     ausente entre T231--T236 e T244. Incluí-lo em memória eleva o LB da
-    variante livre de 187 para 196 dias mas como não foi demonstrado um UB de
+    variante livre de 187 para 196 dias, mas, como não foi demonstrado um UB de
     196, esse valor não está certificado como ótimo. Na variante com
     liberações, um cronograma válido de 285 dias continua a atingir LB 285.
     Assim, a certificação de 187 dias vale somente para a base sem esses
@@ -497,10 +497,10 @@ As principais limitações são:
   \item \textbf{Capacidades estimadas} pelo pico do cronograma praticado.
     Embora as equipes atinjam capacidade em períodos específicos, as
     capacidades atuais permitem atingir os limites de precedência nas
-    variantes principais. Ampliá-las não melhora esses prazos, como vimos nas seções supracitadas entretanto isso
+    variantes principais. Ampliá-las não melhora esses prazos, como vimos nas seções supracitadas; entretanto, isso
     não equivale a uma conclusão sobre contratação ou produtividade.
   \item \textbf{Durações como dados.} Elas incluem pausas e não medem
-    esforço. As reduções percentuais são hipotéticas, ou seja, não tem um lastro robusto e não dizem quanto
+    esforço. As reduções percentuais são hipotéticas, ou seja, não têm um lastro robusto e não dizem quanto
     custa nem se é possível obter cada redução.
   \item \textbf{Calendário abstrato}, em dias úteis consecutivos, sem
     feriados nem calendários por equipe.

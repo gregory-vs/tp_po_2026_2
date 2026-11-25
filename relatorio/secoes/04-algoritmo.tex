@@ -11,17 +11,17 @@ trabalho: \url{https://github.com/gregory-vs/tp_po_2026_2}
 
 \begin{enumerate}
   \item \textbf{Leitura e auditoria dos dados.} Os arquivos de atividades,
-    vínculos e equipes são lidos e conferidos antes de qualquer cálculo onde é garantido
+    vínculos e equipes são lidos e conferidos antes de qualquer cálculo, no qual são verificados
     identificadores únicos, durações não negativas, equipes cadastradas,
     vínculos válidos e ausência de ciclos na rede.
   \item \textbf{Limite inferior pelo caminho crítico.} O método do caminho
     crítico (CPM) calcula, em ordem topológica, os inícios mais rápidos
-    permitidos pelas precedências e pelas datas de liberação ignorando as
+    permitidos pelas precedências e pelas datas de liberação, ignorando as
     capacidades das equipes, ou seja, considerando que elas não limitam a quantidade de
     atividades simultâneas. O maior valor de $F_a+1$ é o comprimento da
-    cadeia de vínculos mais longa, entretanto, esse cálculo não garante que o
-    cronograma respeite as equipes uma vez que ao retirar restrições do problema,
-    fornece um limite inferior (LB) para o ótimo do RCPSP~\cite{kelley1961}. Considerando o cenário sem datas de liberação, o LB é 187 dias, todavia, ao incluir as 27 datas preservadas, o CPM sobre a rede aumentada fornece LB de 285 dias. Por fim, temos que o 
+    cadeia de vínculos mais longa. Entretanto, esse cálculo não garante que o
+    cronograma respeite as equipes, uma vez que, ao retirar restrições do problema,
+    fornece um limite inferior (LB) para o ótimo do RCPSP~\cite{kelley1961}. Considerando o cenário sem datas de liberação, o LB é 187 dias; todavia, ao incluir as 27 datas preservadas, o CPM sobre a rede aumentada fornece LB de 285 dias. Por fim, temos que o
     cálculo de trás para a frente fornece o início mais tarde e a folga
     total de cada atividade.
   \item \textbf{Solução.} Foram usados dois métodos, descritos a seguir:
@@ -30,7 +30,7 @@ trabalho: \url{https://github.com/gregory-vs/tp_po_2026_2}
     de geração de cronogramas (SGS). A formulação dá uma representação
     rigorosa e limites, mas sua dimensão cresce com o horizonte. Na
     instância completa, o CBC encontrou 307 dias em cerca de 36 minutos,
-    com LB de 187 e sem garantia de otimalidade. Esse resultado não foi satisfatório para responder a
+    com LB de 187 e sem garantia de otimalidade. Esse resultado não foi satisfatório para responder à
     pergunta sobre o prazo mínimo, inclusive para a variante com liberações,
     cujo ótimo condicionado é 285 dias. Por isso, foi necessário
     complementar o solver com o SGS, que constrói soluções viáveis
@@ -38,9 +38,9 @@ trabalho: \url{https://github.com/gregory-vs/tp_po_2026_2}
   \item \textbf{Verificação independente.} Os cronogramas principais
     reportados para a instância pequena e para as duas variantes da base
     completa foram conferidos por um verificador separado, que recalcula
-    início e entrega verificando vínculos, capacidades diárias e prazo. As
+    início e entrega, verificando vínculos, capacidades diárias e prazo. As
     rotinas de sensibilidade registram indicadores sem executar esse
-    verificador independente para cada cenário gerando uma limitação que é discutida em mais detalhes
+    verificador independente para cada cenário, gerando uma limitação que é discutida em mais detalhes
     na Seção~\ref{sec:discussao}.
   \item \textbf{Análise de sensibilidade.} Os parâmetros são alterados em
     cópias na memória (capacidades, durações, vínculos ou datas de
@@ -51,18 +51,18 @@ trabalho: \url{https://github.com/gregory-vs/tp_po_2026_2}
 A formulação~\eqref{eq:objetivo}--\eqref{eq:dominio} é montada com a
 biblioteca PuLP~\cite{mitchell2011pulp} e resolvida pelo CBC, solver de
 código aberto do projeto COIN-OR~\cite{forrest2005cbc}. O CBC aplica
-\emph{branch and cut} resolvendo relaxações lineares, acrescentando cortes e
+\emph{branch and cut}, resolvendo relaxações lineares, acrescentando cortes e
 ramificando sobre variáveis fracionárias. O
 procedimento implementado pelo grupo foi focado na montagem do modelo, no
-fornecimento de uma solução inicial e na verificação do resultado sendo a busca em si delegada ao algoritmo interno do solver. Como solução inicial (\emph{warm start}), temos o solver recebendo o cronograma praticado, que é factível e viável
+fornecimento de uma solução inicial e na verificação do resultado, sendo a busca em si delegada ao algoritmo interno do solver. Como solução inicial (\emph{warm start}), temos o solver recebendo o cronograma praticado, que é factível e viável,
 com prazo de 310 dias.
 
 \paragraph{Método (b): limite inferior e esquema serial.}
 O esquema serial de geração de cronogramas (\emph{serial schedule
 generation scheme}, SGS) é um método construtivo clássico do RCPSP
 \cite{kolisch1996}. Ele não tenta resolver todas as datas de início de
-uma vez mas seleciona uma atividade elegível, respeitando uma regra de
-prioridade, e a coloca no primeiro dia permitido ao verificar dependências e capacidades associadas, repetindo o processo até programar todas as atividades disponíveis (Algoritmo~\ref{alg:sgs}). Como cada colocação verifica as equipes e os
+uma vez, mas seleciona uma atividade elegível, respeitando uma regra de
+prioridade, e a coloca no primeiro dia permitido após verificar dependências e capacidades associadas, repetindo o processo até programar todas as atividades disponíveis (Algoritmo~\ref{alg:sgs}). Como cada colocação verifica as equipes e os
 vínculos, o cronograma completo é viável.
 
 \begin{algorithm}[htbp]
@@ -94,26 +94,26 @@ vínculos, o cronograma completo é viável.
   \end{algorithmic}
 \end{algorithm}
 
-O CPM calcula para cada atividade o início mais cedo e o início mais tarde compatíveis com a rede sendo a diferença entre eles a folga total disponível que é responsável por indicar quanto a atividade pode atrasar sem aumentar o prazo da rede sem
+O CPM calcula, para cada atividade, o início mais cedo e o início mais tarde compatíveis com a rede, sendo a diferença entre eles a folga total disponível, que é responsável por indicar quanto a atividade pode atrasar sem aumentar o prazo da rede sem
 recursos. O SGS testa quatro regras determinísticas, sendo elas o menor início mais
 tarde (atividade com menos margem no caminho), menor folga total, menor
 início mais cedo e maior duração. Além delas, executa 30 amostras em que o
 início mais tarde recebe uma pequena perturbação aleatória proporcional à
-folga e a semente 2026 torna a amostragem reproduzível. Entre os
+folga, e a semente 2026 torna a amostragem reproduzível. Entre os
 cronogramas viáveis, guarda-se o de menor prazo, que funciona como um limite superior
 (UB) para o ótimo. Concluindo, temos que a amostragem de regras de prioridade é uma prática
 estudada para SGS no RCPSP~\cite{kolisch1996}.
 
 \paragraph{Prova de otimalidade.}
 O CPM sozinho não produz necessariamente uma solução viável para o
-RCPSP, pois ignora as capacidades, assim, necessitamos que o SGS forneça a parte complementar, ou seja, um
+RCPSP, pois ignora as capacidades. Assim, necessitamos que o SGS forneça a parte complementar, ou seja, um
 cronograma viável e, portanto, um UB. Se $\text{UB}=\text{LB}$, ambos
-coincidem e o ótimo está provado, logo podemos afirmar que não existe cronograma viável menor que
+coincidem e o ótimo está provado; logo, podemos afirmar que não existe cronograma viável menor que
 o LB, e o SGS encontrou um cronograma que o atinge. O princípio utilizado é o mesmo certificado
 de igualdade entre melhor solução viável e limite usado em branch-and-bound,
 embora CPM+SGS não seja o algoritmo branch-and-bound do CBC
 \cite{forrest2005cbc}. Se $\text{UB}>\text{LB}$, não há prova e o ótimo
-permanece no intervalo $[\text{LB},\text{UB}]$. Esse critério também é valido
+permanece no intervalo $[\text{LB},\text{UB}]$. Esse critério também é válido
 para cada cenário de sensibilidade.
 
 \paragraph{Datas de liberação.}
@@ -134,12 +134,12 @@ sensibilidade usam apenas a biblioteca padrão do Python.
   \item \textbf{CBC:} limite de tempo de 1.800 segundos, tolerância de gap
     zero (o solver só declara ótimo com prova), horizonte $H=310$ e
     \emph{warm start} com o cronograma praticado. Ao final, a solução é
-    classificada como ótimo comprovado, viável sem prova (parada por tempo
+    classificada como ótima comprovada, viável sem prova (parada por tempo
     com solução) ou sem solução. O gap é calculado como
     $(\text{UB}-\text{LB})/\text{UB}$.
   \item \textbf{SGS:} quatro regras determinísticas e 30 amostras
     aleatórias com semente 2026. A busca para assim que um cronograma
-    atinge o limite inferior uma vez que nenhum outro pode ser melhor.
+    atinge o limite inferior, uma vez que nenhum outro pode ser melhor.
   \item \textbf{Aceitação:} a validação independente é aplicada aos
     cronogramas principais descritos neste artigo e os indicadores das
     rotinas de sensibilidade não devem ser interpretados como prova de que
