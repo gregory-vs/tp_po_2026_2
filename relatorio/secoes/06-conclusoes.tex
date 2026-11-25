@@ -3,16 +3,12 @@
 \section{Conclusões}
 \label{sec:conclusoes}
 
-O estudo modelou o cronograma de projeto de um empreendimento de grande
-porte como um RCPSP e avaliou o efeito de reorganizar os inícios das
-atividades, mantendo atividades, durações, equipes e vínculos da base. Na
-variante com 27 liberações mínimas preservadas, o cronograma viável de 285
+O estudo teve como objetivo aplicar os conhecimentos adquiridos durante a disciplina de PO de forma prática no contexto de projetos de arquitetura e engenharia de grande porte, nesse caso modelamos o cronograma de um projeto como um RCPSP e avaliamos o efeito de reorganizar os inícios das atividades, mantendo atividades, durações, equipes e vínculos da base. Na variante com 27 liberações mínimas preservadas, o cronograma viável de 285
 dias atinge o limite inferior (LB) do CPM e, portanto, é ótimo para essa
 formulação. Em relação aos 310 dias da referência, representa redução de
-25 dias (8,1\%). Na variante sem essas liberações, o cronograma de 187 dias
+25 dias (8,1\%) e na variante sem essas liberações, o cronograma de 187 dias
 também atinge o LB e é ótimo para a base tal como modelada. A diferença de
-98 dias entre variantes é efeito da imposição das liberações no modelo; não
-mede diretamente a duração do estudo preliminar ausente nem prevê a duração
+98 dias entre variantes é efeito da imposição das liberações no modelo que não é capaz de medir diretamente a duração do estudo preliminar ausente nem prevê a duração
 real do empreendimento.
 
 As 39 equipes atingem suas capacidades em pelo menos um período nos dois
@@ -25,13 +21,13 @@ duração indicam que reduções nas atividades das cadeias críticas têm maior
 efeito no prazo do que reduções fora delas.
 
 Do ponto de vista do método, a formulação inteira indexada no tempo foi
-necessária para declarar as decisões e restrições, mas não bastou para
-responder à pergunta no tempo disponível: após cerca de 36 minutos, o CBC
+necessária para declarar as decisões e restrições, mas não foi suficiente para
+responder à pergunta no tempo disponível, uma vez que após cerca de 36 minutos, o CBC
 tinha um cronograma de 307 dias e um limite inferior de 187, sem prova de
-ótimo. O CPM calcula o limite inferior ao ignorar capacidades; o SGS
+ótimo. O CPM calcula o limite inferior ao ignorar capacidades enquanto que o SGS
 constrói cronogramas que consideram precedências e recursos. A igualdade
 entre UB viável e LB comprovou os ótimos das duas variantes completas. Essa
-certificação por limites não torna o SGS exato em geral: na instância
+certificação por limites não torna o SGS exato em geral. Se considerarmos a instância
 pequena, o cronograma SGS de 45 dias ficou acima do LB de 44, e o CBC
 comprovou o ótimo de 45 dias. Nos cenários sem prova, o UB é apenas o prazo
 encontrado e não deve ser descrito como mínimo necessário.
@@ -41,12 +37,12 @@ bloco do estudo preliminar não foi modelado, e as liberações são datas
 mínimas de início usadas para representar parte de suas predecessoras
 ausentes. A inclusão em memória do vínculo TI de lag zero entre T231--T236
 e T244 eleva o LB livre de 187 para 196 dias, sem que um UB de 196 tenha
-sido demonstrado; por isso, o ótimo de 187 dias está certificado somente
+sido demonstrado. E por isso, o ótimo de 187 dias está certificado somente
 para a base sem esse vínculo. Além disso, as rotinas de sensibilidade
 registram indicadores sem validar cada cronograma pelo verificador
 independente e sem guardar seus inícios. Uma auditoria adicional refez os
 cenários e não encontrou violações, mas a validação automática de cada
-cenário permanece uma limitação da implementação. Como trabalho futuro,
+cenário permanece uma limitação da implementação. Como uma possivel extensão do escopo desse trabalho,
 propõe-se validar cada solução de sensibilidade com seus parâmetros,
 conferindo precedências, capacidades e liberações quando aplicáveis, e
 preservar os inícios, LB, UB e situação da validação. Também se propõe

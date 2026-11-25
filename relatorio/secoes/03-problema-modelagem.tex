@@ -17,17 +17,15 @@ executivo. Em cada etapa, o projetista emite uma revisão (R00, R01, \ldots),
 o cliente analisa e devolve comentários, e uma nova revisão é emitida até a
 aprovação.
 
-Na prática, a arquitetura conduz o processo. As demais disciplinas
-elaboram suas emissões a partir de uma base de arquitetura. A arquitetura
-recebe essas emissões junto com a construtora, que faz a análise técnica e
-a compatibilização, e emite uma nova revisão que inicia o ciclo seguinte.
-Por isso a arquitetura acumula mais revisões que as demais disciplinas.
+Na prática, a arquitetura é o condutor principal do processo e as demais disciplinas
+elaboram suas emissões a partir de uma base determinada anteriormente, ou seja, podemos afirmar que a arquitetura realiza um papel recursivo no projeto sendo requisitada em várias etapas do processo, por exemplo, ao receber emissões junto com a construtora, que faz a análise técnica e
+a compatibilização, e emite uma nova revisão que retorna para a arquitetura, reiniciando o ciclo, por isso, ela é o ponto que acumula mais revisões.
 Quando o projeto é dividido em zonas (torres, embasamento), cada etapa
 costuma avançar zona por zona, como pacotes de uma mesma entrega.
 
-A pergunta do estudo é: \emph{mantidas as mesmas atividades, durações,
+A questão central do estudo é: \emph{mantidas as mesmas atividades, durações,
 dependências e equipes, quanto o prazo total pode cair apenas com a escolha
-dos dias de início?} Um cronograma com essas características é uma
+dos dias de início?} Um cronograma com essas características pode ser considerado uma
 instância do problema de sequenciamento de projetos com restrição de
 recursos (RCPSP, do inglês \emph{resource-constrained project scheduling
 problem}), em que se minimiza o prazo de conclusão (\emph{makespan}) sob
@@ -35,12 +33,12 @@ restrições de precedência e capacidade~\cite{ding2023extensions,kongdou2020}.
 
 \paragraph{Fonte e preparação dos dados.}
 Os dados vêm da revisão R14 do cronograma do empreendimento, anonimizada
-antes de entrar no repositório. As atividades de execução de obra foram
-retiradas, e o recorte ficou restrito ao processo de projeto. A base
+antes de entrar no repositório com as atividades de execução de obra sendo
+retiradas, e o recorte ficando restrito ao processo de projeto. A base
 resultante tem 243 atividades, 1.008 vínculos de precedência e 39 equipes
 (Tabela~\ref{tab:base}). Na preparação, 22 vínculos foram descartados por
 formarem ciclos e 37 por serem incompatíveis com as datas normalizadas do
-cronograma; a lista individual desses descartes não foi preservada. O
+cronograma, sendo a lista individual desses descartes também desconsiderada. Além disso, O
 modelo aceita outras revisões do cronograma com o mesmo formato de dados.
 
 \begin{table}[htbp]
@@ -66,15 +64,14 @@ modelo aceita outras revisões do cronograma com o mesmo formato de dados.
 
 \paragraph{Significado dos parâmetros.}
 A \emph{duração} de uma atividade é o intervalo entre o início e a
-entrega, em dias úteis, com as pausas internas já incluídas. Não é o
-esforço em horas. A \emph{capacidade} de uma equipe é o número de
-atividades que ela mantém abertas ao mesmo tempo. Ela foi estimada pelo
+entrega, em dias úteis, com as pausas internas já incluídas. O esforço em horas não se aplica. A \emph{capacidade} de uma equipe é o número de
+atividades que ela mantém abertas ao mesmo tempo sendo estimada pelo
 pico de atividades simultâneas observado no cronograma praticado, e não por
 um levantamento do quadro real das equipes. As atividades de análise e
-aprovação são atribuídas às equipes do cliente, e as emissões às equipes do
-projetista. Quando uma atividade envolve várias equipes, todas são
-ocupadas ao mesmo tempo. O calendário é abstrato, em dias úteis
-consecutivos, sem feriados.
+aprovação são atribuídas às equipes do cliente, as emissões às equipes do
+projetista e quando uma atividade envolve várias equipes, todas são
+ocupadas ao mesmo tempo. O calendário utilizado é abstrato sendo formatado em dias úteis
+consecutivos, desconsiderando feriados.
 
 \paragraph{Cronograma de referência.}
 O cronograma praticado, normalizado para a mesma escala de dias úteis,
@@ -82,11 +79,11 @@ termina em 310 dias e atende a todos os vínculos e capacidades da base.
 Ele é a referência de comparação e define o horizonte do modelo.
 
 \paragraph{Fora do escopo.}
-O modelo não escolhe quais atividades executar, não altera durações, não
-troca a equipe responsável por uma atividade e não decide o número de
-revisões. Custos, contratação e a reprogramação de um projeto já em
-andamento também estão fora do escopo: o replanejamento parte do dia zero e
-inclui atividades que, na realidade, já foram executadas.
+O modelo tem um escopo bem defino, dessa forma as suas limitações são o fato de não escolher quais atividades executar, não alterar durações, não
+trocar a equipe responsável por uma atividade e não decidir o número de
+revisões. Além disso, custos, contratação e a reprogramação de um projeto em
+andamento também estão fora do escopo sendo o replanejamento partindo do dia zero e
+incluindo atividades já executadas.
 
 \subsection{Conjuntos, parâmetros e variáveis de decisão}
 \label{sec:notacao}
@@ -176,29 +173,29 @@ associadas aos períodos~\cite{artigues2017}:
 
 A função objetivo~\eqref{eq:objetivo} minimiza o prazo total. As
 restrições~\eqref{eq:inicio-unico} obrigam cada atividade a ter exatamente
-um dia de início: nenhuma pode ser omitida. As restrições~\eqref{eq:ti}
+um dia de início e impede omissões. As restrições~\eqref{eq:ti}
 a~\eqref{eq:it} representam os quatro tipos de vínculo. No tipo TI, a
-sucessora começa a partir da entrega da predecessora mais a defasagem; nos
+sucessora começa a partir da entrega da predecessora mais a defasagem e nos
 demais, a comparação usa o início ou a entrega indicados pelo nome do
-tipo. São desigualdades: II não obriga inícios iguais, e TT não obriga
+tipo. Elas são desigualdades, ou seja, II não obriga inícios iguais, e TT não obriga
 entregas iguais. As restrições~\eqref{eq:capacidade} contam, para cada
 equipe e cada dia, as atividades abertas naquele dia e limitam essa
-contagem à capacidade da equipe. A soma interna vale 1 exatamente quando
+contagem à capacidade da equipe e a soma interna vale 1 exatamente quando
 o início escolhido mantém a atividade aberta no dia $t$. As
-restrições~\eqref{eq:prazo} fazem o prazo cobrir todas as entregas; o
+restrições~\eqref{eq:prazo} fazem o prazo cobrir todas as entregas e o
 termo $+1$ converte o índice do último dia, que começa em zero, em número
-de dias. O domínio $T_a$ já impede entregas além do horizonte.
+de dias. O domínio $T_a$ já impede entregas além do horizonte factível.
 
 \paragraph{Convenção dos vínculos TI.}
 Com defasagem zero, a restrição~\eqref{eq:ti} permite que a sucessora
-comece no mesmo dia em que a predecessora é entregue, com um dia de
+comece no mesmo dia em que a predecessora é entregue,ou seja, com um dia de
 sobreposição. A convenção foi aprovada pelo grupo e é a mesma usada para
 normalizar o cronograma praticado, de modo que a comparação entre os dois
-cronogramas é feita sob a mesma regra.
+cronogramas é feita sob a mesma regra e manter a homogeneidade do trabalho.
 
 \paragraph{Variante com datas de liberação.}
-Na base, uma atividade sem predecessora pode começar no dia zero. Para
-representar atividades que, na realidade, aguardavam entregas ausentes da
+Na base, uma atividade sem predecessora pode começar no dia zero. Dessa forma, para
+representar atividades que aguardavam entregas ausentes da
 base (Seção~\ref{sec:largadas}), acrescenta-se
 \begin{equation}
   S_a \ge r_a, \qquad a\in A^{L},
